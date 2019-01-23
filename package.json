@@ -1,6 +1,6 @@
 {
   "name": "@briebug/cypress-schematic",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Add cypress to an Angular CLI project",
   "repository": "briebug/cypress-schematic",
   "bugs": "https://github.com/briebug/cypress-schematic/issues",
@@ -13,7 +13,7 @@
     "clean:launch": "yarn clean && yarn launch",
     "launch": "cd sandbox && ng g @briebug/cypress-schematic:cypress",
     "link:schematic": "yarn link && cd sandbox && yarn link @briebug/cypress-schematic",
-    "publish": "yarn test && PUBLISH_CMD",
+    "publish": "yarn build",
     "test": "yarn build:clean:launch && yarn test:sandbox && yarn clean",
     "test:sandbox": "cd sandbox && yarn lint && yarn test && yarn build",
     "test:unit": "yarn build && jasmine src/**/*_spec.js"
@@ -28,6 +28,9 @@
   "author": "Briebug",
   "license": "MIT",
   "schematics": "./src/collection.json",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@angular-devkit/core": "^7.2.2",
     "@angular-devkit/schematics": "^7.2.2",
