@@ -1,20 +1,50 @@
-# Schematics Starter with Sandbox
+# Jest Angular Schematic
 
-This repository is a basic Schematic implementation that serves as a starting point to create and publish Schematics to NPM.
+[![npm (scoped)](https://img.shields.io/npm/v/@briebug/cypress-schematic.svg)](https://www.npmjs.com/package/@briebug/cypress-schematic)
 
-More info on this sandbox approach is detailed in this blog post [kevinschuchard.com/blog/2018-11-20-schematic-sandbox/](https://www.kevinschuchard.com/blog/2018-11-20-schematic-sandbox/)
+Add [Cypress](https://cypress.io) to an Angular CLI project
 
-## Branches
+This schematic will:
 
-### `master`
+- install Cypress, it's dependencies, and new scripts
+- add necessary files for Cypress to work with Angular & Typescript
+- prompt for removal of Protractor files and configuration
 
-contains the necessary scripts to build & publish a schematic
+## Usage 🚀
 
-### `component-license`
+Install globally
 
-example schematic that uses the Angular Component Schematic to generate a new component similar to `ng generate component NAME`. Also adds a license to each Typescript file with `name` provided by the CLI prompts. I have an article on CLI prompts [here](https://www.kevinschuchard.com/blog/2018-10-22-angular-cli-prompts/).
+```shell
+npm install -g @briebug/cypress-schematic
+```
 
-## Getting started
+Then in an Angular CLI project run
+
+```shell
+ng g @briebug/cypress-schematic:add
+```
+
+Optionally run as one command in an Angular CLI app directory. Note this will add the schematic as a dependency to your project.
+
+```shell
+ng add @briebug/cypress-schematic
+```
+
+## Issues
+
+Issues with this schematic can be filed [here](https://github.com/briebug/cypress-schematic/issues/new/choose).
+
+## Thank You 🙏
+
+Thanks to Kevin Schuchard for setting up the Schematic Sandbox, and writing the [Jest schematic](https://github.com/briebug/jest-schematic) which inspired this schematic.
+
+> More info on this sandbox approach is detailed in this blog post [kevinschuchard.com/blog/2018-11-20-schematic-sandbox/](https://www.kevinschuchard.com/blog/2018-11-20-schematic-sandbox/)
+
+Also, thank you to Zahid Mahmood for writing [this blog post](https://www.technouz.com/4830/getting-started-with-cypress-to-e2e-test-angular-apps/) detailing setting up cypress in an Angular project.
+
+## Development 🛠
+
+### Getting started
 
 ⚙ [Yarn](https://yarnpkg.com/en/docs/install#mac-stable) is required for the scripts. Make sure it's installed on your machine.
 
