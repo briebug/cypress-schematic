@@ -1,4 +1,4 @@
-# Jest Angular Schematic
+# Cypress Angular Schematic
 
 [![npm (scoped)](https://img.shields.io/npm/v/@briebug/cypress-schematic.svg)](https://www.npmjs.com/package/@briebug/cypress-schematic)
 
