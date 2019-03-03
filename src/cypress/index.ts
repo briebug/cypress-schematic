@@ -59,7 +59,7 @@ function updateDependencies(options: any): Rule {
       );
     }
 
-    const addDependencies = of("cypress", "@cypress/webpack-preprocessor").pipe(
+    const addDependencies = of("cypress", "@cypress/webpack-preprocessor", "ts-loader").pipe(
       concatMap((packageName: string) => getLatestNodeVersion(packageName)),
       map((packageFromRegistry: NodePackage) => {
         const { name, version } = packageFromRegistry;
