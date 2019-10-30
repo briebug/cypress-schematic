@@ -12,19 +12,7 @@ This schematic will:
 
 ## Usage 🚀
 
-Install globally
-
-```shell
-npm install -g @briebug/cypress-schematic
-```
-
-Then in an Angular CLI project run
-
-```shell
-ng g @briebug/cypress-schematic:add
-```
-
-Optionally run as one command in an Angular CLI app directory. Note this will add the schematic as a dependency to your project.
+Run as one command in an Angular CLI app directory. Note this will add the schematic as a dependency to your project.
 
 ```shell
 ng add @briebug/cypress-schematic
