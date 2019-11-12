@@ -2,6 +2,7 @@
   "name": "@briebug/cypress-schematic",
   "version": "2.0.0",
   "description": "Add cypress to an Angular CLI project",
+  "builders": "src/builders/builders.json",
   "repository": "briebug/cypress-schematic",
   "bugs": "https://github.com/briebug/cypress-schematic/issues",
   "homepage": "https://github.com/briebug/cypress-schematic",
@@ -32,9 +33,11 @@
     "access": "public"
   },
   "dependencies": {
+    "@angular-devkit/architect": "^0.803.17",
     "@angular-devkit/core": "^8.3.15",
     "@angular-devkit/schematics": "^8.3.15",
     "@schematics/angular": "^8.3.15",
+    "cypress": "3.6.0",
     "rxjs": "6.4.0"
   },
   "devDependencies": {

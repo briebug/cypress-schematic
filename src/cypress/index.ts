@@ -1,14 +1,17 @@
 import { Observable, concat, of } from "rxjs";
 import { concatMap, map } from "rxjs/operators";
 
+import { JsonObject } from "@angular-devkit/core";
 import {
   Rule,
   SchematicContext,
+  SchematicsException,
   Tree,
   apply,
   chain,
   mergeWith,
   move,
+  noop,
   url
 } from "@angular-devkit/schematics";
 import { NodePackageInstallTask } from "@angular-devkit/schematics/tasks";
@@ -19,7 +22,6 @@ import {
 } from "../utility/dependencies";
 import {
   NodePackage,
-  addPropertyToPackageJson,
   getAngularVersion,
   getLatestNodeVersion,
   parseJsonAtPath,
@@ -32,9 +34,9 @@ export default function(_options: any): Rule {
 
     return chain([
       updateDependencies(_options),
-      removeFiles(_options),
+      _options.removeProtractor ? removeFiles(_options) : noop(),
       addCypressFiles(),
-      addCypressScriptsToPackageJson()
+      modifyAngularJson(_options)
     ])(tree, _context);
   };
 }
@@ -91,26 +93,22 @@ function updateDependencies(options: any): Rule {
 
 function removeFiles(options: any): Rule {
   return (tree: Tree, context: SchematicContext) => {
-    if (options.removeProtractor) {
-      context.logger.debug("Removing e2e directory");
-      tree.delete("./e2e");
+    context.logger.debug("Removing e2e directory");
+    tree.delete("./e2e");
 
-      if (tree.exists("./angular.json")) {
-        const angularJsonAst = parseJsonAtPath(tree, "./angular.json");
-        if (angularJsonAst.value) {
-          let val = angularJsonAst.value as any;
-          context.logger.debug(
-            `Removing ${options.project ||
-              val.defaultProject}-e2e from angular.json projects`
-          );
+    if (tree.exists("./angular.json")) {
+      const angularJsonVal = getAngularJsonValue(tree);
+      const project = getProject(options, angularJsonVal);
+      context.logger.debug(
+        `Removing ${project}-e2e from angular.json projects`
+      );
 
-          delete val.projects[`${options.project || val.defaultProject}-e2e`];
+      delete angularJsonVal.projects[`${project}-e2e`];
 
-          return tree.overwrite("./angular.json", JSON.stringify(val, null, 2));
-        }
-      }
-
-      return tree;
+      return tree.overwrite(
+        "./angular.json",
+        JSON.stringify(angularJsonVal, null, 2)
+      );
     }
     return tree;
   };
@@ -127,13 +125,90 @@ function addCypressFiles(): Rule {
   };
 }
 
-function addCypressScriptsToPackageJson(): Rule {
+function addNewCypressCommands(
+  tree: Tree,
+  angularJsonVal: any,
+  project: string,
+  runJson: JsonObject,
+  openJson: JsonObject,
+  removeProtractor: boolean
+) {
+  const projectArchitectJson = angularJsonVal["projects"][project]["architect"];
+
+  projectArchitectJson["cypress-run"] = runJson;
+  projectArchitectJson["cypress-open"] = openJson;
+
+  if (removeProtractor) {
+    projectArchitectJson["e2e"] = openJson;
+  }
+
+  return tree.overwrite(
+    "./angular.json",
+    JSON.stringify(angularJsonVal, null, 2)
+  );
+}
+
+function getAngularJsonValue(tree: Tree) {
+  const angularJsonAst = parseJsonAtPath(tree, "./angular.json");
+  return angularJsonAst.value as any;
+}
+
+function getProject(options: any, angularJsonValue: any) {
+  return options.project || angularJsonValue.defaultProject;
+}
+
+function modifyAngularJson(options: any): Rule {
   return (tree: Tree, context: SchematicContext) => {
-    // prettier-ignore
-    addPropertyToPackageJson(tree, context, 'scripts', {
-      "cypress-open": "cypress open",
-      "cypress-run": "cypress run"
-    });
+    if (tree.exists("./angular.json")) {
+      const angularJsonVal = getAngularJsonValue(tree);
+      const project = getProject(options, angularJsonVal);
+
+      const cypressRunJson = {
+        builder: "@briebug/cypress-schematic:cypress",
+        options: {
+          devServerTarget: `${project}:serve`
+        },
+        configurations: {
+          production: {
+            devServerTarget: `${project}:serve:production`
+          }
+        }
+      };
+
+      const cypressOpenJson = {
+        builder: "@briebug/cypress-schematic:cypress",
+        options: {
+          devServerTarget: `${project}:serve`,
+          mode: "browser"
+        },
+        configurations: {
+          production: {
+            devServerTarget: `${project}:serve:production`
+          }
+        }
+      };
+
+      context.logger.debug(
+        `Adding cypress-run and cypress-open commands in angular.json`
+      );
+
+      if (options.removeProtractor) {
+        context.logger.debug(
+          `Replacing e2e command with cypress-run in angular.json`
+        );
+      }
+
+      addNewCypressCommands(
+        tree,
+        angularJsonVal,
+        project,
+        cypressRunJson,
+        cypressOpenJson,
+        options.removeProtractor
+      );
+    } else {
+      throw new SchematicsException("angular.json not found");
+    }
 
     return tree;
   };
