@@ -1,0 +1,71 @@
+{
+  "title": "Cypress Target",
+  "description": "Cypress target options.",
+  "type": "object",
+  "properties": {
+    "devServerTarget": {
+      "type": "string",
+      "description": "Dev server target to run tests against."
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["console", "browser"],
+      "description": "Run mode of Cypress. Valid value are 'console' and 'browser'",
+      "default": "console"
+    },
+    "baseUrl": {
+      "type": "string",
+      "description": "Base URL for Cypress to connect to."
+    },
+    "host": {
+      "type": "string",
+      "description": "Host to listen on.",
+      "default": "localhost"
+    },
+    "ciBuildId": {
+      "type": "string",
+      "description": "Specify a unique identifier for a run to enable grouping or parallelization"
+    },
+    "env": {
+      "type": "object",
+      "description": "Environment variable"
+    },
+    "group": {
+      "type": "string",
+      "description": "Group recorded tests together under a single run"
+    },
+    "key": {
+      "type": "string",
+      "description": "Specify your secret record key"
+    },
+    "parallel": {
+      "type": "boolean",
+      "description": "Run recorded specs in parallel across multiple machines"
+    },
+    "port": {
+      "type": "number",
+      "description": "The port to use to serve the application."
+    },
+    "project": {
+      "type": "string",
+      "description": "Path to a specific project"
+    },
+    "record": {
+      "type": "boolean",
+      "description": "Whether to record and upload the test run to Cypress Dashboard"
+    },
+    "reporter": {
+      "type": "string",
+      "description": "Specify a Mocha reporter"
+    },
+    "reporterPath": {
+      "type": "string",
+      "description": "Relative path to the reporter based the project root"
+    },
+    "spec": {
+      "type": "string",
+      "description": "Specify the specs to run"
+    }
+  },
+  "additionalProperties": false
+}
