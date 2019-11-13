@@ -63,7 +63,7 @@ function run(
   );
   return workspace.loadWorkspaceFromHost(normalize("angular.json")).pipe(
     switchMap(() => {
-      const project = context && context.target && context.target.project;
+      const project = context?.target?.project;
       const target = workspace.getProjectTargets(project || "");
 
       // normalizes paths don't work with all native functions
