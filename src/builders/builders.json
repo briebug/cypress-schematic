@@ -1,5 +1,5 @@
 {
-  "schema": "@angular-devkit/srchitect/src/builders-schema.json",
+  "schema": "@angular-devkit/architect/src/builders-schema.json",
   "builders": {
     "cypress": {
       "implementation": "./cypress",
