@@ -1,7 +1,14 @@
 import { dirname, join } from "path";
 
 import { Observable, from, noop, of } from "rxjs";
-import { catchError, concatMap, map, take, tap } from "rxjs/operators";
+import {
+  catchError,
+  concatMap,
+  map,
+  take,
+  tap,
+  switchMap
+} from "rxjs/operators";
 
 import {
   BuilderContext,
@@ -10,13 +17,21 @@ import {
   scheduleTargetAndForget,
   targetFromTargetString
 } from "@angular-devkit/architect";
-import { JsonObject } from "@angular-devkit/core";
+import {
+  JsonObject,
+  experimental,
+  normalize,
+  asWindowsPath
+} from "@angular-devkit/core";
+import { NodeJsSyncHost } from "@angular-devkit/core/node";
+import * as os from "os";
+import * as path from "path";
 
 const cypress = require("cypress");
 
 export interface CypressBuilderOptions extends JsonObject {
   baseUrl: string;
-  cypressConfig: string;
+  projectPath: string;
   devServerTarget: string;
   headless: boolean;
   exit: boolean;
@@ -42,50 +57,59 @@ function run(
     options.env.tsConfig = join(context.workspaceRoot, options.tsConfig);
   }
 
-  return (options.devServerTarget
-    ? startDevServer(options.devServerTarget, options.watch, context)
-    : of(options.baseUrl)
-  ).pipe(
-    concatMap((baseUrl: string) =>
-      initCypress(
-        options.cypressConfig,
-        options.headless,
-        options.exit,
-        options.record,
-        options.key,
-        options.parallel,
-        options.watch,
-        baseUrl,
-        options.browser,
-        options.env,
-        options.spec
-      )
-    ),
-    options.watch ? tap(noop) : take(1),
-    catchError(error => {
-      context.reportStatus(`Error: ${error.message}`);
-      context.logger.error(error.message);
-      return of({
-        success: false
-      });
+  const workspace = new experimental.workspace.Workspace(
+    normalize(context.workspaceRoot),
+    new NodeJsSyncHost()
+  );
+  return workspace.loadWorkspaceFromHost(normalize("angular.json")).pipe(
+    switchMap(() => {
+      const project = context && context.target && context.target.project;
+      const target = workspace.getProjectTargets(project || "");
+
+      // normalizes paths don't work with all native functions
+      // as a workaround, you can use the following 2 lines
+      const isWin = os.platform() === "win32";
+      const workspaceRoot = !isWin
+        ? workspace.root
+        : asWindowsPath(workspace.root);
+
+      options.projectPath = path.join(
+        workspaceRoot,
+        target.build.options.outputPath
+      );
+
+      return (options.devServerTarget
+        ? startDevServer(options.devServerTarget, options.watch, context)
+        : of(options.baseUrl)
+      ).pipe(
+        concatMap((baseUrl: string) => initCypress({ ...options, baseUrl })),
+        options.watch ? tap(noop) : take(1),
+        catchError(error => {
+          context.reportStatus(`Error: ${error.message}`);
+          context.logger.error(error.message);
+          return of({
+            success: false
+          });
+        })
+      );
     })
   );
 }
 
-function initCypress(
-  cypressConfig: string,
-  headless: boolean,
-  exit: boolean,
-  record: boolean,
-  key: string,
-  parallel: boolean,
-  isWatching: boolean,
-  baseUrl: string,
-  browser?: string,
-  env?: Record<string, string>,
-  spec?: string
-): Observable<BuilderOutput> {
-  const projectFolderPath = dirname(cypressConfig);
+function initCypress({
+  projectPath,
+  headless,
+  exit,
+  record,
+  key,
+  parallel,
+  isWatching,
+  baseUrl,
+  browser,
+  env,
+  spec
+}: CypressBuilderOptions): Observable<BuilderOutput> {
+  const projectFolderPath = dirname(projectPath);
   const options: any = {
     project: projectFolderPath
   };
