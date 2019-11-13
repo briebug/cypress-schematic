@@ -12,6 +12,10 @@
         "index": 0
       },
       "x-prompt": "Would you like to remove Protractor from the project?"
+    },
+    "noBuilder": {
+      "description": "When true, the angular.json file will not be modified to add cypress commands, requiring the user to run cypress from the command line independent of the Angular CLI",
+      "type": "boolean"
     }
   },
   "required": []

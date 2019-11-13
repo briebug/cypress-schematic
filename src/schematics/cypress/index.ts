@@ -1,7 +1,7 @@
-import { Observable, concat, of } from "rxjs";
-import { concatMap, map } from "rxjs/operators";
+import { Observable, concat, of } from 'rxjs';
+import { concatMap, map } from 'rxjs/operators';
 
-import { JsonObject } from "@angular-devkit/core";
+import { JsonObject } from '@angular-devkit/core';
 import {
   Rule,
   SchematicContext,
@@ -13,20 +13,20 @@ import {
   move,
   noop,
   url
-} from "@angular-devkit/schematics";
-import { NodePackageInstallTask } from "@angular-devkit/schematics/tasks";
+} from '@angular-devkit/schematics';
+import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 
 import {
   NodeDependencyType,
   addPackageJsonDependency
-} from "../utility/dependencies";
+} from '../utility/dependencies';
 import {
   NodePackage,
   getAngularVersion,
   getLatestNodeVersion,
   parseJsonAtPath,
   removePackageJsonDependency
-} from "../utility/util";
+} from '../utility/util';
 
 export default function(_options: any): Rule {
   return (tree: Tree, _context: SchematicContext) => {
@@ -36,7 +36,7 @@ export default function(_options: any): Rule {
       updateDependencies(_options),
       _options.removeProtractor ? removeFiles(_options) : noop(),
       addCypressFiles(),
-      modifyAngularJson(_options)
+      !_options.noBuilder ? modifyAngularJson(_options) : noop()
     ])(tree, _context);
   };
 }
@@ -44,11 +44,11 @@ export default function(_options: any): Rule {
 function updateDependencies(options: any): Rule {
   let removeDependencies: Observable<Tree>;
   return (tree: Tree, context: SchematicContext): Observable<Tree> => {
-    context.logger.debug("Updating dependencies...");
+    context.logger.debug('Updating dependencies...');
     context.addTask(new NodePackageInstallTask());
 
     if (options.removeProtractor) {
-      removeDependencies = of("protractor").pipe(
+      removeDependencies = of('protractor').pipe(
         map((packageName: string) => {
           context.logger.debug(`Removing ${packageName} dependency`);
 
@@ -63,9 +63,9 @@ function updateDependencies(options: any): Rule {
     }
 
     const addDependencies = of(
-      "cypress",
-      "@cypress/webpack-preprocessor",
-      "ts-loader"
+      'cypress',
+      '@cypress/webpack-preprocessor',
+      'ts-loader'
     ).pipe(
       concatMap((packageName: string) => getLatestNodeVersion(packageName)),
       map((packageFromRegistry: NodePackage) => {
@@ -93,10 +93,10 @@ function updateDependencies(options: any): Rule {
 
 function removeFiles(options: any): Rule {
   return (tree: Tree, context: SchematicContext) => {
-    context.logger.debug("Removing e2e directory");
-    tree.delete("./e2e");
+    context.logger.debug('Removing e2e directory');
+    tree.delete('./e2e');
 
-    if (tree.exists("./angular.json")) {
+    if (tree.exists('./angular.json')) {
       const angularJsonVal = getAngularJsonValue(tree);
       const project = getProject(options, angularJsonVal);
       context.logger.debug(
@@ -106,7 +106,7 @@ function removeFiles(options: any): Rule {
       delete angularJsonVal.projects[`${project}-e2e`];
 
       return tree.overwrite(
-        "./angular.json",
+        './angular.json',
         JSON.stringify(angularJsonVal, null, 2)
       );
     }
@@ -116,9 +116,9 @@ function removeFiles(options: any): Rule {
 
 function addCypressFiles(): Rule {
   return (tree: Tree, context: SchematicContext) => {
-    context.logger.debug("Adding cypress files");
+    context.logger.debug('Adding cypress files');
 
-    return chain([mergeWith(apply(url("./files"), [move("./")]))])(
+    return chain([mergeWith(apply(url('./files'), [move('./')]))])(
       tree,
       context
     );
@@ -133,23 +133,23 @@ function addNewCypressCommands(
   openJson: JsonObject,
   removeProtractor: boolean
 ) {
-  const projectArchitectJson = angularJsonVal["projects"][project]["architect"];
+  const projectArchitectJson = angularJsonVal['projects'][project]['architect'];
 
-  projectArchitectJson["cypress-run"] = runJson;
-  projectArchitectJson["cypress-open"] = openJson;
+  projectArchitectJson['cypress-run'] = runJson;
+  projectArchitectJson['cypress-open'] = openJson;
 
   if (removeProtractor) {
-    projectArchitectJson["e2e"] = openJson;
+    projectArchitectJson['e2e'] = openJson;
   }
 
   return tree.overwrite(
-    "./angular.json",
+    './angular.json',
     JSON.stringify(angularJsonVal, null, 2)
   );
 }
 
 function getAngularJsonValue(tree: Tree) {
-  const angularJsonAst = parseJsonAtPath(tree, "./angular.json");
+  const angularJsonAst = parseJsonAtPath(tree, './angular.json');
   return angularJsonAst.value as any;
 }
 
@@ -159,12 +159,12 @@ function getProject(options: any, angularJsonValue: any) {
 
 function modifyAngularJson(options: any): Rule {
   return (tree: Tree, context: SchematicContext) => {
-    if (tree.exists("./angular.json")) {
+    if (tree.exists('./angular.json')) {
       const angularJsonVal = getAngularJsonValue(tree);
       const project = getProject(options, angularJsonVal);
 
       const cypressRunJson = {
-        builder: "@briebug/cypress-schematic:cypress",
+        builder: '@briebug/cypress-schematic:cypress',
         options: {
           devServerTarget: `${project}:serve`
         },
@@ -176,10 +176,11 @@ function modifyAngularJson(options: any): Rule {
       };
 
       const cypressOpenJson = {
-        builder: "@briebug/cypress-schematic:cypress",
+        builder: '@briebug/cypress-schematic:cypress',
         options: {
           devServerTarget: `${project}:serve`,
-          mode: "browser"
+          watch: true,
+          headless: false
         },
         configurations: {
           production: {
@@ -207,7 +208,7 @@ function modifyAngularJson(options: any): Rule {
         options.removeProtractor
       );
     } else {
-      throw new SchematicsException("angular.json not found");
+      throw new SchematicsException('angular.json not found');
     }
 
     return tree;

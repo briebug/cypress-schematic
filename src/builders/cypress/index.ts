@@ -1,14 +1,15 @@
-import { dirname, join } from "path";
+import * as os from 'os';
+import { dirname, join } from 'path';
 
-import { Observable, from, noop, of } from "rxjs";
+import { Observable, from, noop, of } from 'rxjs';
 import {
   catchError,
   concatMap,
   map,
+  switchMap,
   take,
-  tap,
-  switchMap
-} from "rxjs/operators";
+  tap
+} from 'rxjs/operators';
 
 import {
   BuilderContext,
@@ -16,35 +17,13 @@ import {
   createBuilder,
   scheduleTargetAndForget,
   targetFromTargetString
-} from "@angular-devkit/architect";
-import {
-  JsonObject,
-  experimental,
-  normalize,
-  asWindowsPath
-} from "@angular-devkit/core";
-import { NodeJsSyncHost } from "@angular-devkit/core/node";
-import * as os from "os";
-import * as path from "path";
+} from '@angular-devkit/architect';
+import { asWindowsPath, experimental, normalize } from '@angular-devkit/core';
+import { NodeJsSyncHost } from '@angular-devkit/core/node';
 
-const cypress = require("cypress");
+import { CypressBuilderOptions } from './cypress-builder-options';
 
-export interface CypressBuilderOptions extends JsonObject {
-  baseUrl: string;
-  projectPath: string;
-  devServerTarget: string;
-  headless: boolean;
-  exit: boolean;
-  parallel: boolean;
-  record: boolean;
-  key: string;
-  tsConfig: string;
-  watch: boolean;
-  browser: string;
-  env: Record<string, string>;
-  spec: string;
-  copyFiles: string;
-}
+const cypress = require('cypress');
 
 export default createBuilder<CypressBuilderOptions>(run);
 
@@ -53,6 +32,7 @@ function run(
   context: BuilderContext
 ): Observable<BuilderOutput> {
   options.env = options.env || {};
+
   if (options.tsConfig) {
     options.env.tsConfig = join(context.workspaceRoot, options.tsConfig);
   }
@@ -61,22 +41,17 @@ function run(
     normalize(context.workspaceRoot),
     new NodeJsSyncHost()
   );
-  return workspace.loadWorkspaceFromHost(normalize("angular.json")).pipe(
-    switchMap(() => {
-      const project = context && context.target && context.target.project;
-      const target = workspace.getProjectTargets(project || "");
 
-      // normalizes paths don't work with all native functions
+  return workspace.loadWorkspaceFromHost(normalize('angular.json')).pipe(
+    switchMap(() => {
+      // normalized paths don't work with all native functions
       // as a workaround, you can use the following 2 lines
-      const isWin = os.platform() === "win32";
+      const isWin = os.platform() === 'win32';
       const workspaceRoot = !isWin
         ? workspace.root
         : asWindowsPath(workspace.root);
 
-      options.projectPath = path.join(
-        workspaceRoot,
-        target.build.options.outputPath
-      );
+      options.projectPath = `${workspaceRoot}/cypress`;
 
       return (options.devServerTarget
         ? startDevServer(options.devServerTarget, options.watch, context)
@@ -97,46 +72,36 @@ function run(
 }
 
 function initCypress({
-  projectPath,
-  headless,
-  exit,
-  record,
-  key,
-  parallel,
-  isWatching,
   baseUrl,
   browser,
   env,
+  exit,
+  headless,
+  key,
+  watch,
+  parallel,
+  projectPath,
+  record,
   spec
 }: CypressBuilderOptions): Observable<BuilderOutput> {
   const projectFolderPath = dirname(projectPath);
+
   const options: any = {
     project: projectFolderPath
   };
 
-  if (baseUrl) {
-    options.config = { baseUrl: baseUrl };
-  }
-
-  if (browser) {
-    options.browser = browser;
-  }
-
-  if (env) {
-    options.env = env;
-  }
-  if (spec) {
-    options.spec = spec;
-  }
-
-  options.exit = exit;
+  options.browser = browser ? browser : 'electron';
+  options.config = baseUrl ? { baseUrl } : {};
+  options.env = env ? env : null;
+  options.exit = exit || true;
   options.headed = !headless;
-  options.record = record;
   options.key = key;
   options.parallel = parallel;
+  options.record = record || false;
+  options.spec = spec ? spec : '';
 
   return from<any>(
-    !isWatching || headless ? cypress.run(options) : cypress.open(options)
+    !watch || headless ? cypress.run(options) : cypress.open(options)
   ).pipe(
     map((result: any) => ({
       success: !result.totalFailed && !result.failures
@@ -146,11 +111,11 @@ function initCypress({
 
 export function startDevServer(
   devServerTarget: string,
-  isWatching: boolean,
+  watch: boolean,
   context: BuilderContext
 ): Observable<string> {
   const overrides = {
-    watch: isWatching
+    watch
   };
   return scheduleTargetAndForget(
     context,
@@ -158,8 +123,8 @@ export function startDevServer(
     overrides
   ).pipe(
     map((output: any) => {
-      if (!output.success && !isWatching) {
-        throw new Error("Could not compile application files");
+      if (!output.success && !watch) {
+        throw new Error('Could not compile application files');
       }
       return output.baseUrl as string;
     })

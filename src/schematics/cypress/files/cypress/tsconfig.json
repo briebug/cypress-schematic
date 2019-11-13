@@ -2,6 +2,7 @@
   "extends": "../tsconfig.json",
   "include": ["integration/*.ts", "support/*.ts", "../node_modules/cypress"],
   "compilerOptions": {
-    "types": ["cypress", "node"]
+    "types": ["cypress", "node"],
+    "target": "es6"
   }
 }
