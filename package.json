@@ -1,0 +1,64 @@
+{
+  "name": "@briebug/cypress-schematic",
+  "version": "3.0.0",
+  "description": "Add cypress to an Angular CLI project",
+  "builders": "src/builders/builders.json",
+  "repository": "briebug/cypress-schematic",
+  "bugs": "https://github.com/briebug/cypress-schematic/issues",
+  "homepage": "https://github.com/briebug/cypress-schematic",
+  "main": "src/cypress/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "build:clean:launch": "yarn build && yarn clean:launch",
+    "clean": "git checkout HEAD -- sandbox && git clean -f -d sandbox",
+    "clean:launch": "yarn clean && yarn launch",
+    "launch": "cd sandbox && ng add @briebug/cypress-schematic",
+    "link:schematic": "yarn link && cd sandbox && yarn link @briebug/cypress-schematic",
+    "publish": "yarn build",
+    "test": "yarn build:clean:launch && yarn test:sandbox && yarn clean",
+    "test:sandbox": "cd sandbox && yarn lint && yarn test && yarn build",
+    "test:unit": "yarn build && jasmine src/**/*_spec.js"
+  },
+  "keywords": [
+    "builders",
+    "cypress",
+    "e2e",
+    "schematics",
+    "testing",
+    "time-travel"
+  ],
+  "author": "Briebug",
+  "license": "MIT",
+  "schematics": "./src/schematics/collection.json",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@angular-devkit/core": "^8.3.15",
+    "@angular-devkit/schematics": "^8.3.15",
+    "@schematics/angular": "^8.3.15",
+    "cypress": "3.6.1",
+    "rxjs": "6.4.0"
+  },
+  "devDependencies": {
+    "@angular-devkit/architect": "^0.803.17",
+    "@types/jasmine": "^3.3.8",
+    "@types/node": "^10.12.18",
+    "husky": "1.3.1",
+    "jasmine": "^3.3.1",
+    "lint-staged": "8.1.1",
+    "prettier": "1.19.1",
+    "typescript": "~3.7.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,json,md,ts}": [
+      "prettier --write",
+      "git add"
+    ]
+  }
+}
