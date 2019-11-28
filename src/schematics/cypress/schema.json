@@ -13,6 +13,15 @@
       },
       "x-prompt": "Would you like to remove Protractor from the project?"
     },
+    "addCypressTestScript": {
+      "description": " When true, Cypress test script will be added to package.json",
+      "type": "boolean",
+      "$default": {
+        "$source": "argv",
+        "index": 1
+      },
+      "x-prompt": "Would you like to add Cypress test script to package.json?"
+    },
     "noBuilder": {
       "description": "When true, the angular.json file will not be modified to add cypress commands, requiring the user to run cypress from the command line independent of the Angular CLI",
       "type": "boolean"

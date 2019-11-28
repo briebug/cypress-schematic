@@ -25,7 +25,8 @@ import {
   getAngularVersion,
   getLatestNodeVersion,
   parseJsonAtPath,
-  removePackageJsonDependency
+  removePackageJsonDependency,
+  addPropertyToPackageJson
 } from "../utility/util";
 
 export default function(_options: any): Rule {
@@ -36,6 +37,9 @@ export default function(_options: any): Rule {
       updateDependencies(_options),
       _options.removeProtractor ? removeFiles(_options) : noop(),
       addCypressFiles(),
+      _options.addCypressTestScript
+        ? addCypressTestScriptsToPackageJson()
+        : noop(),
       !_options.noBuilder ? modifyAngularJson(_options) : noop()
     ])(tree, _context);
   };
@@ -88,6 +92,15 @@ function updateDependencies(options: any): Rule {
       return concat(removeDependencies, addDependencies);
     }
     return concat(addDependencies);
+  };
+}
+
+function addCypressTestScriptsToPackageJson(): Rule {
+  return (tree: Tree, context: SchematicContext) => {
+    addPropertyToPackageJson(tree, context, "scripts", {
+      "cy:open": "cypress open",
+      "cy:run": "cypress run"
+    });
   };
 }
 
