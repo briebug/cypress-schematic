@@ -1,13 +1,13 @@
 import * as os from "os";
 import { dirname, join } from "path";
 
-import { Observable, from, noop, of } from "rxjs";
+import { from, iif, noop, Observable, of } from "rxjs";
 import {
   catchError,
   concatMap,
+  first,
   map,
   switchMap,
-  take,
   tap
 } from "rxjs/operators";
 
@@ -43,69 +43,57 @@ function run(
   );
 
   return workspace.loadWorkspaceFromHost(normalize("angular.json")).pipe(
-    switchMap(() => {
-      // normalized paths don't work with all native functions
-      // as a workaround, you can use the following 2 lines
-      const isWin = os.platform() === "win32";
-      const workspaceRoot = !isWin
-        ? workspace.root
-        : asWindowsPath(workspace.root);
-
-      options.projectPath = `${workspaceRoot}/cypress`;
-
-      return (options.devServerTarget
-        ? startDevServer(options.devServerTarget, options.watch, context)
-        : of(options.baseUrl)
+    map(() => os.platform() === "win32"),
+    map(isWin => (!isWin ? workspace.root : asWindowsPath(workspace.root))),
+    map(workspaceRoot => ({
+      ...options,
+      projectPath: `${workspaceRoot}/cypress`
+    })),
+    switchMap(options =>
+      iif(
+        () => !!options.devServerTarget,
+        startDevServer(options.devServerTarget, options.watch, context),
+        of(options.baseUrl)
       ).pipe(
         concatMap((baseUrl: string) => initCypress({ ...options, baseUrl })),
-        options.watch ? tap(noop) : take(1),
-        catchError(error => {
-          context.reportStatus(`Error: ${error.message}`);
-          context.logger.error(error.message);
-          return of({
-            success: false
-          });
-        })
-      );
-    })
+        options.watch ? tap(noop) : first(),
+        catchError(error =>
+          of({ success: false }).pipe(
+            tap(() => context.reportStatus(`Error: ${error.message}`)),
+            tap(() => context.logger.error(error.message))
+          )
+        )
+      )
+    )
   );
 }
 
-function initCypress({
-  baseUrl,
-  browser,
-  env,
-  exit,
-  headless,
-  key,
-  watch,
-  parallel,
-  projectPath,
-  record,
-  spec
-}: CypressBuilderOptions): Observable<BuilderOutput> {
-  const projectFolderPath = dirname(projectPath);
+function initCypress(
+  userOptions: CypressBuilderOptions
+): Observable<BuilderOutput> {
+  const projectFolderPath = dirname(userOptions.projectPath);
 
-  const options: any = {
-    project: projectFolderPath
+  const defaultOptions = {
+    project: projectFolderPath,
+    browser: "electron",
+    config: {},
+    env: null,
+    exit: true,
+    headless: true,
+    record: false,
+    spec: ""
   };
 
-  options.browser = browser ? browser : "electron";
-  options.config = baseUrl ? { baseUrl } : {};
-  options.env = env ? env : null;
-  options.exit = exit || true;
-  options.headed = !headless;
-  options.key = key;
-  options.parallel = parallel;
-  options.record = record || false;
-  options.spec = spec ? spec : "";
+  const options: any = {
+    ...defaultOptions,
+    ...userOptions,
+    headed: !userOptions.headless
+  };
 
-  return from<any>(
-    !watch || headless ? cypress.run(options) : cypress.open(options)
-  ).pipe(
-    map((result: any) => ({
-      success: !result.totalFailed && !result.failures
-    }))
+  const { watch, headless } = userOptions;
+
+  return from(cypress[!watch || headless ? "run" : "open"](options)).pipe(
+    map((result: any) => ({ success: !result.totalFailed && !result.failures }))
   );
 }
 
