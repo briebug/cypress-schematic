@@ -37,7 +37,7 @@ export default function(_options: any): Rule {
       updateDependencies(_options),
       _options.removeProtractor ? removeFiles(_options) : noop(),
       addCypressFiles(),
-      _options.addCypressTestScript
+      _options.addCypressTestScripts
         ? addCypressTestScriptsToPackageJson()
         : noop(),
       !_options.noBuilder ? modifyAngularJson(_options) : noop()
