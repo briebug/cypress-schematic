@@ -18,6 +18,12 @@ Run as one command in an Angular CLI app directory. Note this will add the schem
 ng add @briebug/cypress-schematic
 ```
 
+#### Options
+| Option | Description |
+| ------ | ----------- |
+| `--addCypressTestScripts` | This will add Cypress `open` and `run` command scripts to your `package.json`. Include `--addCypressTestScripts` in your `ng add` command. |
+| `--noBuilder` | This will skip the builder addition, leaving the `angular.json` file unmodified and requiring you to run Cypress from the command line or through your IDE. Include `--noBuilder` in your `ng add` command. |
+
 ## Issues
 
 Issues with this schematic can be filed [here](https://github.com/briebug/cypress-schematic/issues/new/choose).
