@@ -14,6 +14,7 @@
     "clean:launch": "yarn clean && yarn launch",
     "launch": "cd sandbox && ng add @briebug/cypress-schematic",
     "link:schematic": "yarn link && cd sandbox && yarn link @briebug/cypress-schematic",
+    "unlink:schematic": "cd sandbox && yarn unlink @briebug/cypress-schematic && cd .. && yarn unlink",
     "publish": "yarn build",
     "test": "yarn build:clean:launch && yarn test:sandbox && yarn clean",
     "test:sandbox": "cd sandbox && yarn lint && yarn test && yarn build",
@@ -50,7 +51,8 @@
     "jasmine": "^3.3.1",
     "lint-staged": "8.1.1",
     "prettier": "1.19.1",
-    "typescript": "~3.7.2"
+    "typescript": "~3.7.2",
+    "cypress": "^3.8.1"
   },
   "husky": {
     "hooks": {
