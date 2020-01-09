@@ -90,30 +90,3 @@ Running the schematic locally makes file system changes. The sandbox is version 
 ```bash
 yarn clean
 ```
-
-_Note: if you're using the `schematics` CLI mentioned below, you can execute the schematic in a dry run mode._
-
-## Change the Schematic name
-
-1. do a global search and replace for `schematic-starter` and `schematicStarter` with the new name.
-2. change the folder name from `./src/schematic-starter/...` to `./src/NEW_NAME/...`
-3. run `yarn link:schematic` to set up local package linking for the sandbox
-
-## Optional - Testing with the Schematics CLI
-
-To test locally, install `@angular-devkit/schematics-cli` globally and use the `schematics` command line tool. That tool acts the same as the `generate` command of the Angular CLI but also has a debug mode.
-
-Check the documentation with
-
-```bash
-schematics --help
-```
-
-## Publishing
-
-To publish, simply do:
-
-```bash
-npm run build
-npm publish
-```
