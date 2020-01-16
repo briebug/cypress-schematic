@@ -1,7 +1,7 @@
 import * as os from "os";
 import { dirname, join } from "path";
 
-import { from, iif, noop, Observable, of } from "rxjs";
+import { from, noop, Observable, of } from "rxjs";
 import {
   catchError,
   concatMap,
@@ -50,10 +50,9 @@ function run(
       projectPath: `${workspaceRoot}/cypress`
     })),
     switchMap(options =>
-      iif(
-        () => !!options.devServerTarget,
-        startDevServer(options.devServerTarget, options.watch, context),
-        of(options.baseUrl)
+      (!!options.devServerTarget
+        ? startDevServer(options.devServerTarget, options.watch, context)
+        : of(options.baseUrl)
       ).pipe(
         concatMap((baseUrl: string) => initCypress({ ...options, baseUrl })),
         options.watch ? tap(noop) : first(),
@@ -92,7 +91,9 @@ function initCypress(
 
   const { watch, headless } = userOptions;
 
-  return from(cypress[!watch || headless ? "run" : "open"](options)).pipe(
+  return from(
+    cypress[!watch || headless ? "run" : "open"]({ config: options })
+  ).pipe(
     map((result: any) => ({ success: !result.totalFailed && !result.failures }))
   );
 }
