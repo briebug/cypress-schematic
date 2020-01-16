@@ -1,6 +1,8 @@
 # Cypress Angular Schematic
 
 [![npm (scoped)](https://img.shields.io/npm/v/@briebug/cypress-schematic.svg)](https://www.npmjs.com/package/@briebug/cypress-schematic)
+![Downloads](https://img.shields.io/npm/dm/@briebug/cypress-schematic.svg)
+
 
 Add [Cypress](https://cypress.io) to an Angular CLI project
 
