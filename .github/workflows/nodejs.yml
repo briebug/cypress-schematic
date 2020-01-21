@@ -1,6 +1,9 @@
 name: Node CI
 
-on: [push]
+on:
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build:
@@ -17,10 +20,12 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: npm install, build, and test
+      - name: Install TypeScript globally
+        run: npm install -g typescript
+      - name: npm install, build, test
         run: |
           npm ci
           npm run build --if-present
-          npm test:unit
+          npm run test:unit
         env:
           CI: true

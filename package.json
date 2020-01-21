@@ -19,7 +19,7 @@
     "publish": "npm run build && np",
     "test": "npm run build:clean:launch && npm run test:sandbox && npm run clean",
     "test:sandbox": "cd sandbox && npm run lint && npm run test && npm run build",
-    "test:unit": "npm run build && jasmine src/**/*_spec.js",
+    "test:unit": "jasmine src/**/*_spec.js",
     "test:e2e": "cd sandbox && ng run sandbox:cypress-run"
   },
   "keywords": [
