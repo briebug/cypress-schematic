@@ -3,7 +3,6 @@
 [![npm (scoped)](https://img.shields.io/npm/v/@briebug/cypress-schematic.svg)](https://www.npmjs.com/package/@briebug/cypress-schematic)
 ![Downloads](https://img.shields.io/npm/dm/@briebug/cypress-schematic.svg)
 
-
 Add [Cypress](https://cypress.io) to an Angular CLI project
 
 This schematic will:
@@ -43,30 +42,24 @@ Also, thank you to Zahid Mahmood for writing [this blog post](https://www.techno
 
 ### Getting started
 
-⚙ [Yarn](https://yarnpkg.com/en/docs/install#mac-stable) is required for the scripts. Make sure it's installed on your machine.
+⚙ [Node.js and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) are required for the scripts. Make sure it's installed on your machine.
 
 ⬇ **Install** the dependencies for the schematic and the sandbox application
 
 ```bash
-yarn && cd sandbox && yarn && cd ..
+npm i && cd sandbox && npm i && cd ..
 ```
 
 🖇 **Link** the schematic in the sandbox to run locally
 
 ```bash
-yarn link:schematic
+npm run link:schematic
 ```
 
 🏃 **Run** the schematic
 
 ```bash
-yarn build:clean:launch
-```
-
-To execute an example schematic, make sure you've ran the **Install** and **Link** steps above. Then run the following and inspect the changed files.
-
-```bash
-git checkout component-license && yarn build:clean:launch
+npm run build:clean:launch
 ```
 
 ## E2E testing
@@ -74,7 +67,7 @@ git checkout component-license && yarn build:clean:launch
 Execute the schematic against the sandbox. Then run linting, unit & e2e tests and a prod build in the sandbox.
 
 ```bash
-yarn test
+npm run test
 ```
 
 ## Unit Testing
@@ -82,7 +75,7 @@ yarn test
 Run the unit tests using Jasmine as a runner and test framework.
 
 ```bash
-yarn test:unit
+npm run test:unit
 ```
 
 ## Reset the sandbox
@@ -90,5 +83,5 @@ yarn test:unit
 Running the schematic locally makes file system changes. The sandbox is version controlled so that viewing a diff of the changes is trivial. After the schematic has run locally, reset the sandbox with the following.
 
 ```bash
-yarn clean
+npm run clean
 ```
