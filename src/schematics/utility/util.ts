@@ -258,16 +258,14 @@ export function parseJsonAtPath(tree: Tree, path: string): JsonAstObject {
   const buffer = tree.read(path);
 
   if (buffer === null) {
-    throw new SchematicsException("Could not read package.json.");
+    throw new SchematicsException(`Could not read ${path}.`);
   }
 
   const content = buffer.toString();
 
   const json = parseJsonAst(content, JsonParseMode.Strict);
   if (json.kind != "object") {
-    throw new SchematicsException(
-      "Invalid package.json. Was expecting an object"
-    );
+    throw new SchematicsException(`Invalid ${path}. Was expecting an object`);
   }
 
   return json;

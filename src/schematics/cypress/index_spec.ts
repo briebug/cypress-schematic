@@ -1,19 +1,42 @@
-import * as path from "path";
-
-import { Tree } from "@angular-devkit/schematics";
 import { SchematicTestRunner } from "@angular-devkit/schematics/testing";
 
-const collectionPath = path.join(__dirname, "../collection.json");
+describe("@briebug/cypress-schematic", async () => {
+  it("works", async () => {
+    async function getWorkspaceTree(appName = "bar") {
+      const ngRunner = new SchematicTestRunner("@schematics/angular", "");
 
-describe("@briebug/cypress-schematic", () => {
-  it("works", () => {
-    const runner = new SchematicTestRunner("schematics", collectionPath);
-    const tree = runner.runSchematic(
+      const workspaceOptions = {
+        name: "workspace",
+        newProjectRoot: "projects",
+        version: "6.0.0",
+        defaultProject: appName
+      };
+
+      const appOptions = {
+        name: appName,
+        inlineTemplate: false,
+        routing: false,
+        skipTests: false,
+        skipPackageJson: false
+      };
+
+      let appTree = await ngRunner
+        .runSchematicAsync("workspace", workspaceOptions)
+        .toPromise();
+      appTree = await ngRunner
+        .runSchematicAsync("application", appOptions, appTree)
+        .toPromise();
+
+      return appTree;
+    }
+
+    const runner = new SchematicTestRunner(
       "@briebug/cypress-schematic",
-      {},
-      Tree.empty()
+      require.resolve("../collection.json")
     );
-
-    expect(tree.files).toEqual([]);
+    const tree = await runner
+      .runSchematicAsync("ng-add", {}, await getWorkspaceTree())
+      .toPromise();
+    expect(tree.files.length).toEqual(35);
   });
 });
