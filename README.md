@@ -19,6 +19,24 @@ Run as one command in an Angular CLI app directory. Note this will add the schem
 ng add @briebug/cypress-schematic
 ```
 
+With the custom builder installed, you can run cypress with the following commands:
+
+```shell script
+ng e2e
+```
+
+```shell script
+ng run {your-project-name}:cypress-open
+```
+
+These two commands do the same thing. They will launch the (Electron) Cypress Test Runner in watch mode.
+
+```shell script
+ng run {your-project-name}:cypress-run
+```
+
+This command will open the (Electron) Cypress Test Runner and run your tests one time, with output to your terminal.
+
 #### Options
 
 | Option                | Description                                                                                                                                                                                                 |

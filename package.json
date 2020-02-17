@@ -20,7 +20,16 @@
     "test": "npm run build:clean:launch && npm run test:sandbox && npm run clean",
     "test:sandbox": "cd sandbox && npm run lint && npm run test && npm run build",
     "test:unit": "jasmine src/**/*_spec.js",
-    "test:e2e": "cd sandbox && ng run sandbox:cypress-run"
+    "test:e2e": "cd sandbox && ng run sandbox:cypress-run",
+    "build:clean:launch:ws": "npm run build && npm run clean:launch:ws",
+    "clean:ws": "git checkout HEAD -- sandbox-workspace && git clean -f -d sandbox-workspace",
+    "clean:launch:ws": "npm run clean:ws && npm run launch:ws",
+    "launch:ws": "cd sandbox-workspace && ng add @briebug/cypress-schematic",
+    "link:schematic:ws": "npm link && cd sandbox-workspace && npm link @briebug/cypress-schematic",
+    "unlink:schematic:ws": "cd sandbox-workspace && npm unlink @briebug/cypress-schematic && cd .. && npm unlink",
+    "test:ws": "npm run build:clean:launch:ws && npm run test:sandbox-workspace && npm run clean:ws",
+    "test:sandbox-workspace": "cd sandbox-workspace && npm run lint && npm run test:ws && npm run build",
+    "test:e2e:ws": "cd sandbox-workspace && ng run new-sandbox:cypress-run"
   },
   "keywords": [
     "builders",
