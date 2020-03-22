@@ -1,5 +1,7 @@
 import { SchematicTestRunner } from "@angular-devkit/schematics/testing";
 
+const NUMBER_OF_SCAFFOLDED_FILES = 37;
+
 describe("@briebug/cypress-schematic", async () => {
   it("works", async () => {
     async function getWorkspaceTree(appName = "bar") {
@@ -37,6 +39,6 @@ describe("@briebug/cypress-schematic", async () => {
     const tree = await runner
       .runSchematicAsync("ng-add", {}, await getWorkspaceTree())
       .toPromise();
-    expect(tree.files.length).toEqual(35);
+    expect(tree.files.length).toEqual(NUMBER_OF_SCAFFOLDED_FILES);
   });
 });
