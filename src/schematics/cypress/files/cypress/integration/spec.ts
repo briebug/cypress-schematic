@@ -1,4 +1,5 @@
 it("loads examples", () => {
-  cy.visit("http://localhost:4200");
+  const baseUrl: string = "http://localhost:4200";
+  cy.visit(baseUrl);
   cy.contains("Replace me with something relevant");
 });
