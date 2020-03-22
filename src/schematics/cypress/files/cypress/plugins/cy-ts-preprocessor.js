@@ -1,4 +1,4 @@
-const wp = require("@cypress/webpack-preprocessor");
+const webpackPreprocessor = require("@cypress/webpack-preprocessor");
 
 const webpackOptions = {
   resolve: {
@@ -23,4 +23,4 @@ const options = {
   webpackOptions
 };
 
-module.exports = wp(options);
+module.exports = webpackPreprocessor(options);
