@@ -1,8 +1,8 @@
-import { JsonObject } from "@angular-devkit/core";
+import { JsonObject } from '@angular-devkit/core';
 
 export interface CypressBuilderOptions extends JsonObject {
   baseUrl: string;
-  browser: "electron" | "chrome" | "chromium" | "canary";
+  browser: 'electron' | 'chrome' | 'chromium' | 'canary' | string;
   devServerTarget: string;
   env: Record<string, string>;
   exit: boolean;
