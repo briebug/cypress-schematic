@@ -42,6 +42,9 @@
   "author": "Briebug",
   "license": "MIT",
   "schematics": "./src/schematics/collection.json",
+  "ng-add": {
+    "save": "devDependencies"
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -67,10 +70,10 @@
     "@angular-devkit/core": "^10.0.8",
     "@angular-devkit/schematics": "^10.0.8",
     "@schematics/angular": "^10.0.8",
-    "rxjs": "6.5.5"
+    "rxjs": "6.6.2"
   },
   "devDependencies": {
-    "@angular-devkit/architect": "^0.1000.8",
+    "@angular-devkit/architect": "^0.1001.0",
     "@types/jasmine": "^3.5.14",
     "@types/node": "^10.17.29",
     "cypress": "^5.1.0",
