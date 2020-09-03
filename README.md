@@ -48,6 +48,8 @@ This command will open the (Electron) Cypress Test Runner and run your tests one
 
 Issues with this schematic can be filed [here](https://github.com/briebug/cypress-schematic/issues/new/choose).
 
+If you want to contribute (or have contributed in the past), feel free to add yourself to the list of contributors in the `package.json`!
+
 ## Thank You 🙏
 
 Thanks to Kevin Schuchard for setting up the Schematic Sandbox, and writing the [Jest schematic](https://github.com/briebug/jest-schematic) which inspired this schematic.
