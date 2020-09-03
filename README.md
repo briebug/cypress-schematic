@@ -48,7 +48,7 @@ This command will open the (Electron) Cypress Test Runner and run your tests one
 
 Issues with this schematic can be filed [here](https://github.com/briebug/cypress-schematic/issues/new/choose).
 
-If you want to contribute (or have contributed in the past), feel free to add yourself to the list of contributors in the `package.json`!
+If you want to contribute (or have contributed in the past), feel free to add yourself to the list of contributors in the `package.json` before you open a PR!
 
 ## Thank You 🙏
 
