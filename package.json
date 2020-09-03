@@ -50,6 +50,11 @@
   },
   "contributors": [
     {
+      "name": "Anthony Jones",
+      "email": "anthony.jones+github@briebug.com",
+      "url": "https://briebug.com"
+    },
+    {
       "name": "Marvin Heilemann",
       "email": "marvin.heilemann+github@googlemail.com",
       "url": "https://marvin.digital/"
