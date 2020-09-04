@@ -186,6 +186,7 @@ function modifyAngularJson(options: any): Rule {
 
       if (options.removeProtractor) {
         context.logger.debug(`Replacing e2e command with cypress-run in angular.json`);
+        removeE2ELinting(tree, angularJsonVal, project);
       }
 
       addNewCypressCommands(
@@ -203,3 +204,23 @@ function modifyAngularJson(options: any): Rule {
     return tree;
   };
 }
+
+export const removeE2ELinting = (tree: Tree, angularJsonVal: any, project: string) => {
+  let projectLintOptionsJson = angularJsonVal['projects'][project]['architect']['lint']['options'];
+  let filteredTsConfigPaths;
+
+  if (Array.isArray(projectLintOptionsJson['tsConfig'])) {
+    filteredTsConfigPaths = projectLintOptionsJson['tsConfig'].filter((path: string) => {
+      const pathIncludesE2e = path.includes('e2e');
+      return !pathIncludesE2e && path;
+    });
+  } else {
+    filteredTsConfigPaths = !projectLintOptionsJson['tsConfig'].includes('e2e')
+      ? projectLintOptionsJson['tsConfig']
+      : '';
+  }
+
+  projectLintOptionsJson['tsConfig'] = filteredTsConfigPaths;
+
+  return tree.overwrite('./angular.json', JSON.stringify(angularJsonVal, null, 2));
+};
