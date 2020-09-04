@@ -1,9 +1,3 @@
-import * as os from 'os';
-import { dirname, join } from 'path';
-
-import { from, noop, Observable, of } from 'rxjs';
-import { catchError, concatMap, first, map, switchMap, tap } from 'rxjs/operators';
-
 import {
   BuilderContext,
   BuilderOutput,
@@ -13,6 +7,11 @@ import {
 } from '@angular-devkit/architect';
 import { asWindowsPath, experimental, normalize } from '@angular-devkit/core';
 import { NodeJsSyncHost } from '@angular-devkit/core/node';
+import * as os from 'os';
+import { dirname, join } from 'path';
+
+import { from, noop, Observable, of } from 'rxjs';
+import { catchError, concatMap, first, map, switchMap, tap } from 'rxjs/operators';
 
 import { CypressBuilderOptions } from './cypress-builder-options';
 

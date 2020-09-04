@@ -1,30 +1,21 @@
-import { get } from "http";
-
 import {
-  JsonAstObject,
-  JsonParseMode,
-  Path,
   experimental,
   join,
+  JsonAstObject,
+  JsonParseMode,
   parseJson,
-  parseJsonAst
-} from "@angular-devkit/core";
-import {
-  SchematicContext,
-  SchematicsException,
-  Tree
-} from "@angular-devkit/schematics";
+  parseJsonAst,
+  Path,
+} from '@angular-devkit/core';
+import { SchematicContext, SchematicsException, Tree } from '@angular-devkit/schematics';
+import { get } from 'http';
 
-import {
-  DeleteNodeDependency,
-  getPackageJsonDependency,
-  pkgJson
-} from "./dependencies";
+import { DeleteNodeDependency, getPackageJsonDependency, pkgJson } from './dependencies';
 import {
   appendPropertyInAstObject,
   findPropertyInAstObject,
-  insertPropertyInAstObjectInOrder
-} from "./json-utils";
+  insertPropertyInAstObjectInOrder,
+} from './json-utils';
 
 export interface NodePackage {
   name: string;
@@ -32,11 +23,11 @@ export interface NodePackage {
 }
 
 export enum Paths {
-  AngularJson = "./angular.json"
+  AngularJson = './angular.json',
 }
 
 export enum Configs {
-  JsonIndentLevel = 4
+  JsonIndentLevel = 4,
 }
 
 export type WorkspaceSchema = experimental.workspace.WorkspaceSchema;
@@ -47,24 +38,16 @@ export interface CypressOptions {
 }
 
 export function getAngularVersion(tree: Tree): number {
-  const packageNode = getPackageJsonDependency(tree, "@angular/core");
+  const packageNode = getPackageJsonDependency(tree, '@angular/core');
 
-  const version =
-    packageNode &&
-    packageNode.version.split("").find(char => !!parseInt(char, 10));
+  const version = packageNode && packageNode.version.split('').find((char) => !!parseInt(char, 10));
 
   return version ? +version : 0;
 }
 
 export function getWorkspacePath(host: Tree): string {
-  const possibleFiles = [
-    "/angular.json",
-    "/.angular.json",
-    "/angular-cli.json"
-  ];
-  const path = possibleFiles.filter(path => host.exists(path))[0];
-
-  return path;
+  const possibleFiles = ['/angular.json', '/.angular.json', '/angular-cli.json'];
+  return possibleFiles.filter((path) => host.exists(path))[0];
 }
 
 export function getWorkspace(host: Tree): WorkspaceSchema {
@@ -87,38 +70,30 @@ export function getSourcePath(tree: Tree, options: any): String {
 
   const project = workspace.projects[options.project];
 
-  if (project.projectType !== "application") {
-    throw new SchematicsException(
-      `Add Cypress requires a project type of "application".`
-    );
+  if (project.projectType !== 'application') {
+    throw new SchematicsException(`Add Cypress requires a project type of "application".`);
   }
 
-  const sourcePath = join(project.root as Path, "src");
-
-  return sourcePath;
+  return join(project.root as Path, 'src');
 }
 
 // modified version from utility/dependencies/getPackageJsonDependency
-export function removePackageJsonDependency(
-  tree: Tree,
-  dependency: DeleteNodeDependency
-): void {
+export function removePackageJsonDependency(tree: Tree, dependency: DeleteNodeDependency): void {
   const packageJsonAst = parseJsonAtPath(tree, pkgJson.Path);
   const depsNode = findPropertyInAstObject(packageJsonAst, dependency.type);
   const recorder = tree.beginUpdate(pkgJson.Path);
 
   if (!depsNode) {
     // Haven't found the dependencies key.
-    new SchematicsException("Could not find the package.json dependency");
-  } else if (depsNode.kind === "object") {
-    const fullPackageString = depsNode.text.split("\n").filter(pkg => {
+    new SchematicsException('Could not find the package.json dependency');
+  } else if (depsNode.kind === 'object') {
+    const fullPackageString = depsNode.text.split('\n').filter((pkg) => {
       return pkg.includes(`"${dependency.name}"`);
     })[0];
 
-    const commaDangle =
-      fullPackageString && fullPackageString.trim().slice(-1) === "," ? 1 : 0;
+    const commaDangle = fullPackageString && fullPackageString.trim().slice(-1) === ',' ? 1 : 0;
 
-    const packageAst = depsNode.properties.find(node => {
+    const packageAst = depsNode.properties.find((node) => {
       return node.key.value.toLowerCase() === dependency.name.toLowerCase();
     });
 
@@ -158,7 +133,7 @@ export function addPropertyToPackageJson(
       propertyValue,
       Configs.JsonIndentLevel
     );
-  } else if (pkgNode.kind === "object") {
+  } else if (pkgNode.kind === 'object') {
     // property exists, update values
     for (let [key, value] of Object.entries(propertyValue)) {
       const innerNode = findPropertyInAstObject(pkgNode, key);
@@ -167,13 +142,7 @@ export function addPropertyToPackageJson(
         // script not found, add it
         context.logger.debug(`creating ${key} with ${value}`);
 
-        insertPropertyInAstObjectInOrder(
-          recorder,
-          pkgNode,
-          key,
-          value,
-          Configs.JsonIndentLevel
-        );
+        insertPropertyInAstObjectInOrder(recorder, pkgNode, key, value, Configs.JsonIndentLevel);
       } else {
         // script found, overwrite value
         context.logger.debug(`overwriting ${key} with ${value}`);
@@ -196,10 +165,10 @@ export function getWorkspaceConfig(tree: Tree, options: CypressOptions) {
   let projectProps;
 
   if (options.__version__ >= 6) {
-    projectName = options.project || workspace.defaultProject || "";
+    projectName = options.project || workspace.defaultProject || '';
     projectProps = workspace.projects[projectName];
   } else if (options.__version__ < 6) {
-    projectName = (workspace as any).project.name || "";
+    projectName = (workspace as any).project.name || '';
     projectProps = (workspace as any).apps[0];
   }
 
@@ -224,32 +193,27 @@ export function isMultiAppV5(tree: Tree, options: CypressOptions) {
  * Return an optional "latest" version in case of error
  * @param packageName
  */
-export function getLatestNodeVersion(
-  packageName: string
-): Promise<NodePackage> {
-  const DEFAULT_VERSION = "latest";
+export function getLatestNodeVersion(packageName: string): Promise<NodePackage> {
+  const DEFAULT_VERSION = 'latest';
 
-  return new Promise(resolve => {
-    return get(`http://registry.npmjs.org/${packageName}`, res => {
-      let rawData = "";
-      res.on("data", chunk => (rawData += chunk));
-      res.on("end", () => {
+  return new Promise((resolve) => {
+    return get(`http://registry.npmjs.org/${packageName}`, (res) => {
+      let rawData = '';
+      res.on('data', (chunk) => (rawData += chunk));
+      res.on('end', () => {
         try {
           const response = JSON.parse(rawData);
-          const version = (response && response["dist-tags"]) || {};
+          const version = (response && response['dist-tags']) || {};
 
           resolve(buildPackage(packageName, version.latest));
         } catch (e) {
           resolve(buildPackage(packageName));
         }
       });
-    }).on("error", () => resolve(buildPackage(packageName)));
+    }).on('error', () => resolve(buildPackage(packageName)));
   });
 
-  function buildPackage(
-    name: string,
-    version: string = DEFAULT_VERSION
-  ): NodePackage {
+  function buildPackage(name: string, version: string = DEFAULT_VERSION): NodePackage {
     return { name, version };
   }
 }
@@ -264,7 +228,7 @@ export function parseJsonAtPath(tree: Tree, path: string): JsonAstObject {
   const content = buffer.toString();
 
   const json = parseJsonAst(content, JsonParseMode.Strict);
-  if (json.kind != "object") {
+  if (json.kind != 'object') {
     throw new SchematicsException(`Invalid ${path}. Was expecting an object`);
   }
 

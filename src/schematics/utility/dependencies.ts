@@ -7,24 +7,24 @@
  * https://github.com/angular/angular-cli/blob/master/packages/schematics/angular/utility/dependencies.ts
  */
 
-import { Tree } from "@angular-devkit/schematics";
+import { Tree } from '@angular-devkit/schematics';
 
 import {
   appendPropertyInAstObject,
   findPropertyInAstObject,
-  insertPropertyInAstObjectInOrder
-} from "./json-utils";
-import { parseJsonAtPath } from "./util";
+  insertPropertyInAstObjectInOrder,
+} from './json-utils';
+import { parseJsonAtPath } from './util';
 
 export enum pkgJson {
-  Path = "/package.json"
+  Path = '/package.json',
 }
 
 export enum NodeDependencyType {
-  Default = "dependencies",
-  Dev = "devDependencies",
-  Peer = "peerDependencies",
-  Optional = "optionalDependencies"
+  Default = 'dependencies',
+  Dev = 'devDependencies',
+  Peer = 'peerDependencies',
+  Optional = 'optionalDependencies',
 }
 
 export interface NodeDependency {
@@ -39,10 +39,7 @@ export interface DeleteNodeDependency {
   name: string;
 }
 
-export function addPackageJsonDependency(
-  tree: Tree,
-  dependency: NodeDependency
-): void {
+export function addPackageJsonDependency(tree: Tree, dependency: NodeDependency): void {
   const packageJsonAst = parseJsonAtPath(tree, pkgJson.Path);
   const depsNode = findPropertyInAstObject(packageJsonAst, dependency.type);
   const recorder = tree.beginUpdate(pkgJson.Path);
@@ -54,23 +51,17 @@ export function addPackageJsonDependency(
       packageJsonAst,
       dependency.type,
       {
-        [dependency.name]: dependency.version
+        [dependency.name]: dependency.version,
       },
       4
     );
-  } else if (depsNode.kind === "object") {
+  } else if (depsNode.kind === 'object') {
     // check if package already added
     const depNode = findPropertyInAstObject(depsNode, dependency.name);
 
     if (!depNode) {
       // Package not found, add it.
-      insertPropertyInAstObjectInOrder(
-        recorder,
-        depsNode,
-        dependency.name,
-        dependency.version,
-        4
-      );
+      insertPropertyInAstObjectInOrder(recorder, depsNode, dependency.name, dependency.version, 4);
     } else if (dependency.overwrite) {
       // Package found, update version if overwrite.
       const { end, start } = depNode;
@@ -82,30 +73,27 @@ export function addPackageJsonDependency(
   tree.commitUpdate(recorder);
 }
 
-export function getPackageJsonDependency(
-  tree: Tree,
-  name: string
-): NodeDependency | null {
+export function getPackageJsonDependency(tree: Tree, name: string): NodeDependency | null {
   const packageJson = parseJsonAtPath(tree, pkgJson.Path);
   let dep: NodeDependency | null = null;
   [
     NodeDependencyType.Default,
     NodeDependencyType.Dev,
     NodeDependencyType.Optional,
-    NodeDependencyType.Peer
-  ].forEach(depType => {
+    NodeDependencyType.Peer,
+  ].forEach((depType) => {
     if (dep !== null) {
       return;
     }
     const depsNode = findPropertyInAstObject(packageJson, depType);
-    if (depsNode !== null && depsNode.kind === "object") {
+    if (depsNode !== null && depsNode.kind === 'object') {
       const depNode = findPropertyInAstObject(depsNode, name);
-      if (depNode !== null && depNode.kind === "string") {
+      if (depNode !== null && depNode.kind === 'string') {
         const version = depNode.value;
         dep = {
           type: depType,
           name: name,
-          version: version
+          version: version,
         };
       }
     }

@@ -11,9 +11,9 @@ import {
   JsonAstKeyValue,
   JsonAstNode,
   JsonAstObject,
-  JsonValue
-} from "@angular-devkit/core";
-import { UpdateRecorder } from "@angular-devkit/schematics";
+  JsonValue,
+} from '@angular-devkit/core';
+import { UpdateRecorder } from '@angular-devkit/schematics';
 
 export function appendPropertyInAstObject(
   recorder: UpdateRecorder,
@@ -27,19 +27,13 @@ export function appendPropertyInAstObject(
   if (node.properties.length > 0) {
     // Insert comma.
     const last = node.properties[node.properties.length - 1];
-    recorder.insertRight(
-      last.start.offset + last.text.replace(/\s+$/, "").length,
-      ","
-    );
+    recorder.insertRight(last.start.offset + last.text.replace(/\s+$/, '').length, ',');
   }
 
   recorder.insertLeft(
     node.end.offset - 1,
-    "  " +
-      `"${propertyName}": ${JSON.stringify(value, null, 2).replace(
-        /\n/g,
-        indentStr
-      )}` +
+    '  ' +
+      `"${propertyName}": ${JSON.stringify(value, null, 2).replace(/\n/g, indentStr)}` +
       indentStr.slice(0, -2)
   );
 }
@@ -85,18 +79,13 @@ export function insertPropertyInAstObjectInOrder(
   const indentStr = _buildIndent(indent);
 
   const insertIndex =
-    insertAfterProp === null
-      ? node.start.offset + 1
-      : insertAfterProp.end.offset + 1;
+    insertAfterProp === null ? node.start.offset + 1 : insertAfterProp.end.offset + 1;
 
   recorder.insertRight(
     insertIndex,
     `${indentStr}` +
-      `"${propertyName}": ${JSON.stringify(value, null, 2).replace(
-        /\n/g,
-        indentStr
-      )}` +
-      ","
+      `"${propertyName}": ${JSON.stringify(value, null, 2).replace(/\n/g, indentStr)}` +
+      ','
   );
 }
 
@@ -111,17 +100,12 @@ export function appendValueInAstArray(
   if (node.elements.length > 0) {
     // Insert comma.
     const last = node.elements[node.elements.length - 1];
-    recorder.insertRight(
-      last.start.offset + last.text.replace(/\s+$/, "").length,
-      ","
-    );
+    recorder.insertRight(last.start.offset + last.text.replace(/\s+$/, '').length, ',');
   }
 
   recorder.insertLeft(
     node.end.offset - 1,
-    "  " +
-      JSON.stringify(value, null, 2).replace(/\n/g, indentStr) +
-      indentStr.slice(0, -2)
+    '  ' + JSON.stringify(value, null, 2).replace(/\n/g, indentStr) + indentStr.slice(0, -2)
   );
 }
 
@@ -140,5 +124,5 @@ export function findPropertyInAstObject(
 }
 
 function _buildIndent(count: number): string {
-  return "\n" + new Array(count + 1).join(" ");
+  return '\n' + new Array(count + 1).join(' ');
 }
