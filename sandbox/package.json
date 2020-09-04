@@ -7,7 +7,7 @@
     "build": "ng build --prod",
     "test": "ng test --watch=false",
     "lint": "ng lint",
-    "e2e": "ng e2e --port=4300"
+    "e2e": "ng e2e"
   },
   "private": true,
   "dependencies": {
