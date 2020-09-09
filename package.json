@@ -9,7 +9,9 @@
   "main": "src/cypress/index.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "build:test": "tsc -p tsconfig.spec.json",
     "build:watch": "tsc -p tsconfig.json -watch",
+    "build:test:watch": "tsc -p tsconfig.spec.json -watch",
     "build:clean:launch": "npm run build && npm run clean:launch",
     "clean": "git checkout HEAD -- sandbox && git clean -f -d sandbox",
     "clean:launch": "npm run clean && npm run launch",
@@ -71,12 +73,12 @@
     "@angular-devkit/core": "^10.1.0",
     "@angular-devkit/schematics": "^10.1.0",
     "@schematics/angular": "^10.1.0",
+    "cypress": "^5.1.0",
     "rxjs": "6.6.2"
   },
   "devDependencies": {
     "@types/jasmine": "^3.5.14",
     "@types/node": "^10.17.30",
-    "cypress": "^5.1.0",
     "husky": "^4.2.5",
     "jasmine": "^3.6.1",
     "lint-staged": "^10.2.13",
