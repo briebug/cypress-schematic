@@ -25,6 +25,7 @@ jobs:
       - name: npm install, build, test
         run: |
           npm ci
+          npm run build --if-present
           npm run build:test --if-present
           npm run test:unit
         env:
