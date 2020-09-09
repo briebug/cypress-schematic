@@ -33,10 +33,6 @@ describe('@briebug/cypress-schematic', async () => {
       require.resolve('../collection.json')
     );
     const tree = await runner.runSchematicAsync('ng-add', {}, await getWorkspaceTree()).toPromise();
-    console.log(tree.files);
-    console.log(tree.readContent('/package.json'));
-    console.log(tree.readContent('/tsconfig.json'));
-    console.log(tree.readContent('/tsconfig.base.json'));
     expect(tree.files.length).toEqual(NUMBER_OF_SCAFFOLDED_FILES);
   });
 });
