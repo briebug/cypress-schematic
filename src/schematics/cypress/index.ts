@@ -182,12 +182,16 @@ function modifyAngularJson(options: any): Rule {
         },
       };
 
-      context.logger.debug(`Adding cypress-run and cypress-open commands in angular.json`);
-
       if (options.removeProtractor) {
         context.logger.debug(`Replacing e2e command with cypress-run in angular.json`);
         removeE2ELinting(tree, angularJsonVal, project);
       }
+
+      context.logger.debug(`Adding cypress/tsconfig.json to angular.json-tslint config`);
+
+      addCypressTsConfig(tree, angularJsonVal, project);
+
+      context.logger.debug(`Adding cypress-run and cypress-open commands in angular.json`);
 
       addNewCypressCommands(
         tree,
@@ -204,6 +208,15 @@ function modifyAngularJson(options: any): Rule {
     return tree;
   };
 }
+
+export const addCypressTsConfig = (tree: Tree, angularJsonVal: any, project: string) => {
+  const projectLintOptionsJson =
+    angularJsonVal['projects'][project]['architect']['lint']['options'];
+
+  projectLintOptionsJson['tsConfig'].push('cypress/tsconfig.json');
+
+  return tree.overwrite('./angular.json', JSON.stringify(angularJsonVal, null, 2));
+};
 
 export const removeE2ELinting = (tree: Tree, angularJsonVal: any, project: string) => {
   let projectLintOptionsJson = angularJsonVal['projects'][project]['architect']['lint']['options'];
