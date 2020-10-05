@@ -3,6 +3,10 @@
 [![npm (scoped)](https://img.shields.io/npm/v/@briebug/cypress-schematic.svg)](https://www.npmjs.com/package/@briebug/cypress-schematic)
 ![Downloads](https://img.shields.io/npm/dm/@briebug/cypress-schematic.svg)
 
+<p align="center">
+  <img alt="Cypress Schematic Logo" src="/cypress-schematic-logo.png" width=300 />
+</p>
+
 Add [Cypress](https://cypress.io) to an Angular CLI project
 
 This schematic will:
