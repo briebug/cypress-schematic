@@ -3,6 +3,10 @@
 [![npm (scoped)](https://img.shields.io/npm/v/@briebug/cypress-schematic.svg)](https://www.npmjs.com/package/@briebug/cypress-schematic)
 ![Downloads](https://img.shields.io/npm/dm/@briebug/cypress-schematic.svg)
 
+<p align="center">
+  <img alt="Cypress Schematic Logo" src="/cypress-schematic-logo.png" width=300 />
+</p>
+
 Add [Cypress](https://cypress.io) to an Angular CLI project
 
 This schematic will:
@@ -50,14 +54,6 @@ Issues with this schematic can be filed [here](https://github.com/briebug/cypres
 
 If you want to contribute (or have contributed in the past), feel free to add yourself to the list of contributors in the `package.json` before you open a PR!
 
-## Thank You 🙏
-
-Thanks to Kevin Schuchard for setting up the Schematic Sandbox, and writing the [Jest schematic](https://github.com/briebug/jest-schematic) which inspired this schematic.
-
-> More info on this sandbox approach is detailed in this blog post [kevinschuchard.com/blog/2018-11-20-schematic-sandbox/](https://www.kevinschuchard.com/blog/2018-11-20-schematic-sandbox/)
-
-Also, thank you to Zahid Mahmood for writing [this blog post](https://www.technouz.com/4830/getting-started-with-cypress-to-e2e-test-angular-apps/) detailing setting up cypress in an Angular project.
-
 ## Development 🛠
 
 ### Getting started
@@ -73,7 +69,7 @@ npm i && cd sandbox && npm i && cd ..
 🖇 **Link** the schematic in the sandbox to run locally
 
 ```bash
-npm run link:schematic
+npm run link:sandbox
 ```
 
 🏃 **Run** the schematic
