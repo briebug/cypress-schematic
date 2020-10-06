@@ -23,10 +23,7 @@
             "polyfills": "projects/new-sandbox/src/polyfills.ts",
             "tsConfig": "projects/new-sandbox/tsconfig.app.json",
             "aot": true,
-            "assets": [
-              "projects/new-sandbox/src/favicon.ico",
-              "projects/new-sandbox/src/assets"
-            ],
+            "assets": ["projects/new-sandbox/src/favicon.ico", "projects/new-sandbox/src/assets"],
             "styles": ["projects/new-sandbox/src/styles.scss"],
             "scripts": []
           },
@@ -85,10 +82,7 @@
             "polyfills": "projects/new-sandbox/src/polyfills.ts",
             "tsConfig": "projects/new-sandbox/tsconfig.spec.json",
             "karmaConfig": "projects/new-sandbox/karma.conf.js",
-            "assets": [
-              "projects/new-sandbox/src/favicon.ico",
-              "projects/new-sandbox/src/assets"
-            ],
+            "assets": ["projects/new-sandbox/src/favicon.ico", "projects/new-sandbox/src/assets"],
             "styles": ["projects/new-sandbox/src/styles.scss"],
             "scripts": []
           }
@@ -113,6 +107,121 @@
           "configurations": {
             "production": {
               "devServerTarget": "new-sandbox:serve:production"
+            }
+          }
+        }
+      }
+    },
+    "second-sandbox": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/second-sandbox",
+      "sourceRoot": "projects/second-sandbox/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/second-sandbox",
+            "index": "projects/second-sandbox/src/index.html",
+            "main": "projects/second-sandbox/src/main.ts",
+            "polyfills": "projects/second-sandbox/src/polyfills.ts",
+            "tsConfig": "projects/second-sandbox/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "projects/second-sandbox/src/favicon.ico",
+              "projects/second-sandbox/src/assets"
+            ],
+            "styles": ["projects/second-sandbox/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/second-sandbox/src/environments/environment.ts",
+                  "with": "projects/second-sandbox/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "second-sandbox:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "second-sandbox:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "second-sandbox:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/second-sandbox/src/test.ts",
+            "polyfills": "projects/second-sandbox/src/polyfills.ts",
+            "tsConfig": "projects/second-sandbox/tsconfig.spec.json",
+            "karmaConfig": "projects/second-sandbox/karma.conf.js",
+            "assets": [
+              "projects/second-sandbox/src/favicon.ico",
+              "projects/second-sandbox/src/assets"
+            ],
+            "styles": ["projects/second-sandbox/src/styles.scss"],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/second-sandbox/tsconfig.app.json",
+              "projects/second-sandbox/tsconfig.spec.json",
+              "projects/second-sandbox/e2e/tsconfig.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/second-sandbox/e2e/protractor.conf.js",
+            "devServerTarget": "second-sandbox:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "second-sandbox:serve:production"
             }
           }
         }
