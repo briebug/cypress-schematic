@@ -94,11 +94,10 @@ function addCypressTestScriptsToPackageJson(): Rule {
 
 function removeFiles(options: any): Rule {
   return (tree: Tree, context: SchematicContext) => {
-    context.logger.debug('Removing e2e directory');
-
-    if (tree.getDir('./e2e')) {
+    try {
+      context.logger.debug('Removing e2e directory');
       tree.delete('./e2e');
-    }
+    } catch {}
 
     if (tree.exists('./angular.json')) {
       const angularJsonVal = getAngularJsonValue(tree);
