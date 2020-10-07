@@ -30,7 +30,7 @@
     "link:workspace": "npm link && cd sandbox-workspace && npm link @briebug/cypress-schematic",
     "unlink:workspace": "cd sandbox-workspace && npm unlink @briebug/cypress-schematic && cd .. && npm unlink",
     "test:ws": "npm run build:clean:launch:ws && npm run test:sandbox-workspace && npm run clean:ws",
-    "test:sandbox-workspace": "cd sandbox-workspace && npm run lint && npm run test:ws && npm run build",
+    "test:sandbox-workspace": "cd sandbox-workspace && npm run lint && npm run test && npm run build",
     "test:e2e:ws": "cd sandbox-workspace && ng run new-sandbox:cypress-run"
   },
   "keywords": [
