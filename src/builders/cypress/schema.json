@@ -7,6 +7,10 @@
       "type": "string",
       "description": "Use this to pass directly the address of your distant server address with the port running your application"
     },
+    "configPath": {
+      "type": "string",
+      "description": "The path to the cypress configuration that should be used."
+    },
     "browser": {
       "type": "string",
       "description": "The browser to run tests in.",
