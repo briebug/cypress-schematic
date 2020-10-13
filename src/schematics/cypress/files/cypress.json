@@ -1,3 +1,5 @@
 {
-  "supportFile": "cypress/support/index.ts"
+  "integrationFolder": "<%= root%>cypress/integration",
+  "supportFile": "<%= root%>cypress/support/index.ts",
+  "baseUrl": "<%= baseUrl%>"
 }
