@@ -3,13 +3,13 @@ import {
   BuilderOutput,
   createBuilder,
   scheduleTargetAndForget,
-  targetFromTargetString,
+  targetFromTargetString
 } from '@angular-devkit/architect';
 import { asWindowsPath, experimental, normalize } from '@angular-devkit/core';
 import { NodeJsSyncHost } from '@angular-devkit/core/node';
 import * as os from 'os';
 import { dirname, join } from 'path';
-import { run, open } from 'cypress';
+import { open, run } from 'cypress';
 
 import { from, noop, Observable, of } from 'rxjs';
 import { catchError, concatMap, first, map, switchMap, tap } from 'rxjs/operators';
@@ -27,7 +27,6 @@ function runCypress(
   if (options.tsConfig) {
     options.env.tsConfig = join(context.workspaceRoot, options.tsConfig);
   }
-
   const workspace = new experimental.workspace.Workspace(
     normalize(context.workspaceRoot),
     new NodeJsSyncHost()
@@ -39,11 +38,12 @@ function runCypress(
     map((workspaceRoot) => ({
       ...options,
       projectPath: `${workspaceRoot}/cypress`,
+      config: options.configPath ? require(`${workspaceRoot}/${options.configPath}`) : undefined
     })),
     switchMap((options) =>
       (!!options.devServerTarget
-        ? startDevServer(options.devServerTarget, options.watch, context)
-        : of(options.baseUrl)
+          ? startDevServer(options.devServerTarget, options.watch, context)
+          : of(options.baseUrl)
       ).pipe(
         concatMap((baseUrl: string) => initCypress({ ...options, baseUrl })),
         options.watch ? tap(noop) : first(),
@@ -69,13 +69,13 @@ function initCypress(userOptions: CypressBuilderOptions): Observable<BuilderOutp
     exit: true,
     headless: true,
     record: false,
-    spec: '',
+    spec: ''
   };
 
   const options: any = {
     ...defaultOptions,
     ...userOptions,
-    headed: !userOptions.headless,
+    headed: !userOptions.headless
   };
 
   const { watch, headless } = userOptions;
@@ -91,7 +91,7 @@ export function startDevServer(
   context: BuilderContext
 ): Observable<string> {
   const overrides = {
-    watch,
+    watch
   };
   return scheduleTargetAndForget(context, targetFromTargetString(devServerTarget), overrides).pipe(
     map((output: any) => {
