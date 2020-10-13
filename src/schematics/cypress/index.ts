@@ -1,4 +1,4 @@
-import { JsonObject } from '@angular-devkit/core';
+import { getSystemPath, JsonObject, normalize, strings } from '@angular-devkit/core';
 import {
   apply,
   chain,
@@ -8,8 +8,9 @@ import {
   Rule,
   SchematicContext,
   SchematicsException,
+  template,
   Tree,
-  url,
+  url
 } from '@angular-devkit/schematics';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import { concat, Observable, of } from 'rxjs';
@@ -22,10 +23,11 @@ import {
   getLatestNodeVersion,
   NodePackage,
   parseJsonAtPath,
-  removePackageJsonDependency,
+  removePackageJsonDependency
 } from '../utility/util';
+import { relative, resolve } from 'path';
 
-export default function (_options: any): Rule {
+export default function(_options: any): Rule {
   return (tree: Tree, _context: SchematicContext) => {
     _options = { ..._options, __version__: getAngularVersion(tree) };
 
@@ -34,7 +36,7 @@ export default function (_options: any): Rule {
       _options.removeProtractor ? removeFiles() : noop(),
       addCypressFiles(),
       _options.addCypressTestScripts ? addCypressTestScriptsToPackageJson() : noop(),
-      !_options.noBuilder ? modifyAngularJson(_options) : noop(),
+      !_options.noBuilder ? modifyAngularJson(_options) : noop()
     ])(tree, _context);
   };
 }
@@ -52,7 +54,7 @@ function updateDependencies(options: any): Rule {
 
           removePackageJsonDependency(tree, {
             type: NodeDependencyType.Dev,
-            name: packageName,
+            name: packageName
           });
 
           return tree;
@@ -69,7 +71,7 @@ function updateDependencies(options: any): Rule {
         addPackageJsonDependency(tree, {
           type: NodeDependencyType.Dev,
           name,
-          version,
+          version
         });
 
         return tree;
@@ -87,7 +89,7 @@ function addCypressTestScriptsToPackageJson(): Rule {
   return (tree: Tree, context: SchematicContext) => {
     addPropertyToPackageJson(tree, context, 'scripts', {
       'cy:open': 'cypress open',
-      'cy:run': 'cypress run',
+      'cy:run': 'cypress run'
     });
   };
 }
@@ -95,7 +97,8 @@ function addCypressTestScriptsToPackageJson(): Rule {
 function deleteDirectory(tree: Tree, path: string): void {
   try {
     tree.delete(path);
-  } catch {}
+  } catch {
+  }
 }
 
 function removeFiles(): Rule {
@@ -131,9 +134,32 @@ function removeFiles(): Rule {
 function addCypressFiles(): Rule {
   return (tree: Tree, context: SchematicContext) => {
     context.logger.debug('Adding cypress files');
-
-    return chain([mergeWith(apply(url('./files'), [move('./')]))])(tree, context);
+    const angularJsonValue = getAngularJsonValue(tree);
+    const { projects } = angularJsonValue;
+    return chain(Object.keys(projects).map(name => {
+      const project = projects[name];
+      const projectPath = resolve(getSystemPath(normalize(project.root)));
+      const workspacePath = resolve(getSystemPath(normalize('')));
+      const relativeToWorkspace = relative(`${projectPath}/cypress`, workspacePath);
+      const baseUrl = getBaseUrl(project);
+      return mergeWith(apply(url('./files'), [move(project.root), template({
+        ...strings,
+        root: project.root ? `${project.root}/` : project.root,
+        baseUrl,
+        relativeToWorkspace
+      })]));
+    }))(tree, context);
   };
+}
+
+function getBaseUrl(project: { architect: { serve: { options: any } } }): string {
+  let options = { protocol: 'http', port: 4200, host: 'localhost' };
+  if (project.architect?.serve?.options) {
+    const projectOptions = project.architect?.serve?.options;
+    options = { ...options, ...projectOptions };
+    options.protocol = projectOptions.ssl ? 'https' : 'http';
+  }
+  return `${options.protocol}://${options.host}:${options.port}`;
 }
 
 function addNewCypressCommands(
@@ -173,13 +199,13 @@ function modifyAngularJson(options: any): Rule {
         const cypressRunJson = {
           builder: '@briebug/cypress-schematic:cypress',
           options: {
-            devServerTarget: `${project}:serve`,
+            devServerTarget: `${project}:serve`
           },
           configurations: {
             production: {
-              devServerTarget: `${project}:serve:production`,
-            },
-          },
+              devServerTarget: `${project}:serve:production`
+            }
+          }
         };
 
         const cypressOpenJson = {
@@ -187,14 +213,22 @@ function modifyAngularJson(options: any): Rule {
           options: {
             devServerTarget: `${project}:serve`,
             watch: true,
-            headless: false,
+            headless: false
           },
           configurations: {
             production: {
-              devServerTarget: `${project}:serve:production`,
-            },
-          },
+              devServerTarget: `${project}:serve:production`
+            }
+          }
         };
+
+        const configPath = !!projects[project].root ?
+          `${projects[project].root}/cypress.json` : null;
+
+        if (configPath) {
+          Object.assign(cypressRunJson.options, { configPath });
+          Object.assign(cypressOpenJson.options, { configPath });
+        }
 
         if (options.removeProtractor) {
           context.logger.debug(`Replacing e2e command with cypress-run in angular.json`);
