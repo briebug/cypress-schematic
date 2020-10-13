@@ -173,6 +173,9 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
+            "host": "localhost",
+            "port": 4242,
+            "ssl": true,
             "browserTarget": "second-sandbox:build"
           },
           "configurations": {
