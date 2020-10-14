@@ -11,7 +11,7 @@ Add [Cypress](https://cypress.io) to an Angular CLI project
 
 This schematic will:
 
-- install Cypress, it's dependencies, and new scripts
+- install Cypress, its dependencies, and new scripts
 - add necessary files for Cypress to work with Angular & Typescript
 - prompt for removal of Protractor files and configuration
 
