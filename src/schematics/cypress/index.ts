@@ -266,30 +266,31 @@ function modifyAngularJson(options: any): Rule {
 }
 
 export const addCypressTsConfig = (tree: Tree, angularJsonVal: any, project: string) => {
-  const projectLintOptionsJson =
-    angularJsonVal['projects'][project]['architect']['lint']['options'];
-
-  projectLintOptionsJson['tsConfig'].push('cypress/tsconfig.json');
-
+  const tsConfig = angularJsonVal.projects[project]?.architect?.lint?.options?.tsConfig;
+  if (tsConfig) {
+    tsConfig.push('cypress/tsconfig.json');
+  }
   return tree.overwrite('./angular.json', JSON.stringify(angularJsonVal, null, 2));
 };
 
 export const removeE2ELinting = (tree: Tree, angularJsonVal: any, project: string) => {
-  let projectLintOptionsJson = angularJsonVal['projects'][project]['architect']['lint']['options'];
-  let filteredTsConfigPaths;
+  const projectLintOptionsJson = angularJsonVal.projects[project]?.architect?.lint?.options;
+  if (projectLintOptionsJson) {
+    let filteredTsConfigPaths;
 
-  if (Array.isArray(projectLintOptionsJson['tsConfig'])) {
-    filteredTsConfigPaths = projectLintOptionsJson['tsConfig'].filter((path: string) => {
-      const pathIncludesE2e = path.includes('e2e');
-      return !pathIncludesE2e && path;
-    });
-  } else {
-    filteredTsConfigPaths = !projectLintOptionsJson['tsConfig'].includes('e2e')
-      ? projectLintOptionsJson['tsConfig']
-      : '';
+    if (Array.isArray(projectLintOptionsJson['tsConfig'])) {
+      filteredTsConfigPaths = projectLintOptionsJson?.tsConfig?.filter((path: string) => {
+        const pathIncludesE2e = path.includes('e2e');
+        return !pathIncludesE2e && path;
+      });
+    } else {
+      filteredTsConfigPaths = !projectLintOptionsJson?.tsConfig?.includes('e2e')
+        ? projectLintOptionsJson?.tsConfig
+        : '';
+    }
+
+    projectLintOptionsJson['tsConfig'] = filteredTsConfigPaths;
   }
-
-  projectLintOptionsJson['tsConfig'] = filteredTsConfigPaths;
 
   return tree.overwrite('./angular.json', JSON.stringify(angularJsonVal, null, 2));
 };
