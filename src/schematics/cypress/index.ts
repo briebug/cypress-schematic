@@ -265,10 +265,15 @@ function modifyAngularJson(options: any): Rule {
   };
 }
 
-export const addCypressTsConfig = (tree: Tree, angularJsonVal: any, project: string) => {
-  const tsConfig = angularJsonVal.projects[project]?.architect?.lint?.options?.tsConfig;
+export const addCypressTsConfig = (tree: Tree, angularJsonVal: any, projectName: string) => {
+  const project = angularJsonVal.projects[projectName];
+  const tsConfig = project?.architect?.lint?.options?.tsConfig;
   if (tsConfig) {
-    tsConfig.push('cypress/tsconfig.json');
+    let prefix = '';
+    if (project.root) {
+      prefix = `${project.root}/`;
+    }
+    tsConfig.push(`${prefix}cypress/tsconfig.json`);
   }
   return tree.overwrite('./angular.json', JSON.stringify(angularJsonVal, null, 2));
 };
