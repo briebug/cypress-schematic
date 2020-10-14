@@ -7,9 +7,9 @@
       "type": "string",
       "description": "Use this to pass directly the address of your distant server address with the port running your application"
     },
-    "configPath": {
-      "type": "string",
-      "description": "The path to the cypress configuration that should be used."
+    "configFile": {
+      "type": ["string", "boolean"],
+      "description": "You can specify a path to a JSON file where configuration values are set or you can pass false to disable the use of a configuration file entirely."
     },
     "browser": {
       "type": "string",
