@@ -3,7 +3,7 @@ import {
   BuilderOutput,
   createBuilder,
   scheduleTargetAndForget,
-  targetFromTargetString
+  targetFromTargetString,
 } from '@angular-devkit/architect';
 import { asWindowsPath, experimental, normalize } from '@angular-devkit/core';
 import { NodeJsSyncHost } from '@angular-devkit/core/node';
@@ -38,12 +38,11 @@ function runCypress(
     map((workspaceRoot) => ({
       ...options,
       projectPath: `${workspaceRoot}/cypress`,
-      config: options.configPath ? require(`${workspaceRoot}/${options.configPath}`) : undefined
     })),
     switchMap((options) =>
       (!!options.devServerTarget
-          ? startDevServer(options.devServerTarget, options.watch, context)
-          : of(options.baseUrl)
+        ? startDevServer(options.devServerTarget, options.watch, context)
+        : of(options.baseUrl)
       ).pipe(
         concatMap((baseUrl: string) => initCypress({ ...options, baseUrl })),
         options.watch ? tap(noop) : first(),
@@ -64,19 +63,22 @@ function initCypress(userOptions: CypressBuilderOptions): Observable<BuilderOutp
   const defaultOptions = {
     project: projectFolderPath,
     browser: 'electron',
-    config: {},
     env: null,
     exit: true,
     headless: true,
     record: false,
-    spec: ''
+    spec: '',
   };
 
   const options: any = {
     ...defaultOptions,
     ...userOptions,
-    headed: !userOptions.headless
+    headed: !userOptions.headless,
   };
+
+  if (userOptions.configFile === undefined) {
+    options.config = {};
+  }
 
   const { watch, headless } = userOptions;
 
@@ -91,7 +93,7 @@ export function startDevServer(
   context: BuilderContext
 ): Observable<string> {
   const overrides = {
-    watch
+    watch,
   };
   return scheduleTargetAndForget(context, targetFromTargetString(devServerTarget), overrides).pipe(
     map((output: any) => {
