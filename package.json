@@ -18,7 +18,7 @@
     "launch": "npm run link:sandbox && cd sandbox && ng add @briebug/cypress-schematic --remove-protractor",
     "link:sandbox": "npm link && cd sandbox && npm link @briebug/cypress-schematic",
     "unlink:sandbox": "cd sandbox && npm unlink @briebug/cypress-schematic && cd .. && npm unlink",
-    "publish": "npm run build && np",
+    "release": "npm run build && np",
     "test": "npm run build:clean:launch && npm run test:sandbox && npm run clean",
     "test:sandbox": "cd sandbox && npm run lint && npm run test && npm run build",
     "test:unit": "jasmine src/**/*_spec.js",
