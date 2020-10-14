@@ -4,7 +4,7 @@
 ![Downloads](https://img.shields.io/npm/dm/@briebug/cypress-schematic.svg)
 
 <p align="center">
-  <img alt="Cypress Schematic Logo" src="/cypress-schematic-logo.png" width=300 />
+  <img alt="Cypress Schematic Logo" src="/cypress-schematic-logo-v2.png" width=300 />
 </p>
 
 Add [Cypress](https://cypress.io) to an Angular CLI project
