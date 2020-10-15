@@ -1,6 +1,6 @@
 {
   "name": "@briebug/cypress-schematic",
-  "version": "4.2.1",
+  "version": "4.2.2",
   "description": "Add cypress to an Angular CLI project",
   "builders": "src/builders/builders.json",
   "repository": "briebug/cypress-schematic",
