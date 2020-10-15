@@ -6,6 +6,7 @@ export interface CypressBuilderOptions extends JsonObject {
   browser: 'electron' | 'chrome' | 'chromium' | 'canary' | string;
   devServerTarget: string;
   env: Record<string, string>;
+  quiet: boolean;
   exit: boolean;
   headless: boolean;
   key: string;
