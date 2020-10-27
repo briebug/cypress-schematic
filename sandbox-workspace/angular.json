@@ -208,11 +208,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "projects/second-sandbox/tsconfig.app.json",
-              "projects/second-sandbox/tsconfig.spec.json",
-              "projects/second-sandbox/e2e/tsconfig.json"
-            ],
+            "tsConfig": "projects/second-sandbox/tsconfig.app.json",
             "exclude": ["**/node_modules/**"]
           }
         },
