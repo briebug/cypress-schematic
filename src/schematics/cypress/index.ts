@@ -267,11 +267,14 @@ function modifyAngularJson(options: any): Rule {
 
 export const addCypressTsConfig = (tree: Tree, angularJsonVal: any, projectName: string) => {
   const project = angularJsonVal.projects[projectName];
-  const tsConfig = project?.architect?.lint?.options?.tsConfig;
+  let tsConfig = project?.architect?.lint?.options?.tsConfig;
   if (tsConfig) {
     let prefix = '';
     if (project.root) {
       prefix = `${project.root}/`;
+    }
+    if (!Array.isArray(tsConfig)) {
+      project.architect.lint.options.tsConfig = tsConfig = [tsConfig];
     }
     tsConfig.push(`${prefix}cypress/tsconfig.json`);
   }
