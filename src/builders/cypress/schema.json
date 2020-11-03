@@ -19,7 +19,7 @@
     "browser": {
       "type": "string",
       "description": "The browser to run tests in.",
-      "enum": ["electron", "chrome", "chromium", "canary"]
+      "enum": ["electron", "chrome", "chromium", "canary", "firefox"]
     },
     "devServerTarget": {
       "type": "string",
