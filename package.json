@@ -73,6 +73,7 @@
     "@angular-devkit/core": "^10.1.0",
     "@angular-devkit/schematics": "^10.1.0",
     "@schematics/angular": "^10.1.0",
+    "chalk": "^4.1.0",
     "cypress": "^6.0.0",
     "rxjs": "6.6.2"
   },
