@@ -7,7 +7,7 @@
     "build": "ng build --prod",
     "test": "ng test --watch=false",
     "lint": "ng lint --fix",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e --headless --no-watch"
   },
   "private": true,
   "dependencies": {
