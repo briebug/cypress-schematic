@@ -1,6 +1,6 @@
 import { SchematicTestRunner } from '@angular-devkit/schematics/testing';
 
-const NUMBER_OF_SCAFFOLDED_FILES = 37;
+const NUMBER_OF_SCAFFOLDED_FILES = 36;
 
 describe('@briebug/cypress-schematic', async () => {
   it('works', async () => {
