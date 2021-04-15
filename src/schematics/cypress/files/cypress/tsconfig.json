@@ -1,7 +1,8 @@
 {
   "extends": "<%= relativeToWorkspace %>/tsconfig.json",
-  "include": ["<%= relativeToWorkspace %>/node_modules/cypress", "**/*.ts"],
+  "include": ["**/*.ts"],
   "compilerOptions": {
-    "sourceMap": false
+    "sourceMap": false,
+    "types": ["cypress"]
   }
 }
