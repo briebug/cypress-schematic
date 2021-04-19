@@ -18,6 +18,9 @@ import { CypressBuilderOptions } from './cypress-builder-options';
 
 export default createBuilder<CypressBuilderOptions>(runCypress);
 
+type CypressOptions = Partial<CypressCommandLine.CypressRunOptions> &
+  Partial<CypressCommandLine.CypressOpenOptions>;
+
 function runCypress(
   options: CypressBuilderOptions,
   context: BuilderContext
@@ -60,17 +63,15 @@ function runCypress(
 function initCypress(userOptions: CypressBuilderOptions): Observable<BuilderOutput> {
   const projectFolderPath = dirname(userOptions.projectPath);
 
-  const defaultOptions = {
+  const defaultOptions: CypressOptions = {
     project: projectFolderPath,
     browser: 'electron',
-    env: null,
-    exit: true,
     headless: true,
     record: false,
     spec: '',
   };
 
-  const options: any = {
+  const options: CypressOptions = {
     ...defaultOptions,
     ...userOptions,
     headed: !userOptions.headless,
@@ -78,6 +79,10 @@ function initCypress(userOptions: CypressBuilderOptions): Observable<BuilderOutp
 
   if (userOptions.configFile === undefined) {
     options.config = {};
+  }
+
+  if (userOptions.baseUrl) {
+    options.config = { ...options.config, baseUrl: userOptions.baseUrl };
   }
 
   const { watch, headless } = userOptions;
