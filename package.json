@@ -1,6 +1,6 @@
 {
   "name": "@briebug/cypress-schematic",
-  "version": "4.0.3",
+  "version": "4.4.0",
   "description": "Add cypress to an Angular CLI project",
   "builders": "src/builders/builders.json",
   "repository": "briebug/cypress-schematic",
@@ -9,14 +9,16 @@
   "main": "src/cypress/index.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "build:test": "tsc -p tsconfig.spec.json",
     "build:watch": "tsc -p tsconfig.json -watch",
+    "build:test:watch": "tsc -p tsconfig.spec.json -watch",
     "build:clean:launch": "npm run build && npm run clean:launch",
     "clean": "git checkout HEAD -- sandbox && git clean -f -d sandbox",
     "clean:launch": "npm run clean && npm run launch",
-    "launch": "npm run link:sandbox && cd sandbox && ng add @briebug/cypress-schematic",
+    "launch": "npm run link:sandbox && cd sandbox && ng add @briebug/cypress-schematic --remove-protractor",
     "link:sandbox": "npm link && cd sandbox && npm link @briebug/cypress-schematic",
     "unlink:sandbox": "cd sandbox && npm unlink @briebug/cypress-schematic && cd .. && npm unlink",
-    "publish": "npm run build && np",
+    "release": "npm run build && np",
     "test": "npm run build:clean:launch && npm run test:sandbox && npm run clean",
     "test:sandbox": "cd sandbox && npm run lint && npm run test && npm run build",
     "test:unit": "jasmine src/**/*_spec.js",
@@ -24,11 +26,11 @@
     "build:clean:launch:ws": "npm run build && npm run clean:launch:ws",
     "clean:ws": "git checkout HEAD -- sandbox-workspace && git clean -f -d sandbox-workspace",
     "clean:launch:ws": "npm run clean:ws && npm run launch:ws",
-    "launch:ws": "npm run link:workspace && cd sandbox-workspace && ng add @briebug/cypress-schematic",
+    "launch:ws": "npm run link:workspace && cd sandbox-workspace && ng add @briebug/cypress-schematic --remove-protractor",
     "link:workspace": "npm link && cd sandbox-workspace && npm link @briebug/cypress-schematic",
     "unlink:workspace": "cd sandbox-workspace && npm unlink @briebug/cypress-schematic && cd .. && npm unlink",
     "test:ws": "npm run build:clean:launch:ws && npm run test:sandbox-workspace && npm run clean:ws",
-    "test:sandbox-workspace": "cd sandbox-workspace && npm run lint && npm run test:ws && npm run build",
+    "test:sandbox-workspace": "cd sandbox-workspace && npm run lint && npm run test && npm run build",
     "test:e2e:ws": "cd sandbox-workspace && ng run new-sandbox:cypress-run"
   },
   "keywords": [
@@ -64,24 +66,25 @@
     }
   ],
   "peerDependencies": {
-    "cypress": "^5.1.0"
+    "cypress": "^7.0.0"
   },
   "dependencies": {
     "@angular-devkit/architect": "^0.1001.0",
     "@angular-devkit/core": "^10.1.0",
     "@angular-devkit/schematics": "^10.1.0",
     "@schematics/angular": "^10.1.0",
-    "rxjs": "^6.6.2"
+    "cypress": "^7.0.0",
+    "rxjs": "6.6.2"
   },
   "devDependencies": {
     "@types/jasmine": "^3.5.14",
-    "@types/node": "^10.17.29",
-    "cypress": "^5.1.0",
+    "@types/node": "^10.17.30",
+    "chalk": "^4.1.0",
     "husky": "^4.2.5",
     "jasmine": "^3.6.1",
     "lint-staged": "^10.2.13",
     "prettier": "^2.1.1",
-    "typescript": "~3.7.2"
+    "typescript": "^4.0.2"
   },
   "husky": {
     "hooks": {
@@ -90,8 +93,7 @@
   },
   "lint-staged": {
     "*.{js,json,md,ts}": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
   }
 }

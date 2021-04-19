@@ -7,10 +7,19 @@
       "type": "string",
       "description": "Use this to pass directly the address of your distant server address with the port running your application"
     },
+    "configFile": {
+      "type": ["string", "boolean"],
+      "description": "You can specify a path to a JSON file where configuration values are set or you can pass false to disable the use of a configuration file entirely."
+    },
+    "quiet": {
+      "type": "boolean",
+      "description": "If passed, Cypress output will not be printed to stdout. Only output from the configured Mocha reporter will print.",
+      "default": false
+    },
     "browser": {
       "type": "string",
       "description": "The browser to run tests in.",
-      "enum": ["electron", "chrome", "chromium", "canary"]
+      "enum": ["electron", "chrome", "chromium", "canary", "firefox"]
     },
     "devServerTarget": {
       "type": "string",
@@ -58,5 +67,5 @@
       "default": false
     }
   },
-  "additionalProperties": false
+  "additionalProperties": true
 }

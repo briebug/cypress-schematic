@@ -15,7 +15,7 @@
 //
 // NOTE: You can use it like so:
 // Cypress.Commands.add('customCommand', customCommand);
-// 
+//
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite

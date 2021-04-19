@@ -9,23 +9,24 @@ import { asWindowsPath, experimental, normalize } from '@angular-devkit/core';
 import { NodeJsSyncHost } from '@angular-devkit/core/node';
 import * as os from 'os';
 import { dirname, join } from 'path';
+import { open, run } from 'cypress';
 
 import { from, noop, Observable, of } from 'rxjs';
 import { catchError, concatMap, first, map, switchMap, tap } from 'rxjs/operators';
 
 import { CypressBuilderOptions } from './cypress-builder-options';
 
-const cypress = require('cypress');
+export default createBuilder<CypressBuilderOptions>(runCypress);
 
-export default createBuilder<CypressBuilderOptions>(run);
-
-function run(options: CypressBuilderOptions, context: BuilderContext): Observable<BuilderOutput> {
+function runCypress(
+  options: CypressBuilderOptions,
+  context: BuilderContext
+): Observable<BuilderOutput> {
   options.env = options.env || {};
 
   if (options.tsConfig) {
     options.env.tsConfig = join(context.workspaceRoot, options.tsConfig);
   }
-
   const workspace = new experimental.workspace.Workspace(
     normalize(context.workspaceRoot),
     new NodeJsSyncHost()
@@ -62,7 +63,6 @@ function initCypress(userOptions: CypressBuilderOptions): Observable<BuilderOutp
   const defaultOptions = {
     project: projectFolderPath,
     browser: 'electron',
-    config: {},
     env: null,
     exit: true,
     headless: true,
@@ -76,9 +76,13 @@ function initCypress(userOptions: CypressBuilderOptions): Observable<BuilderOutp
     headed: !userOptions.headless,
   };
 
+  if (userOptions.configFile === undefined) {
+    options.config = {};
+  }
+
   const { watch, headless } = userOptions;
 
-  return from(cypress[!watch || headless ? 'run' : 'open'](options)).pipe(
+  return from(watch === false || headless ? run(options) : open(options)).pipe(
     map((result: any) => ({ success: !result.totalFailed && !result.failures }))
   );
 }
