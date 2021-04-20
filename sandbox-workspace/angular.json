@@ -76,12 +76,10 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-builders/jest:run",
           "options": {
-            "main": "projects/new-sandbox/src/test.ts",
             "polyfills": "projects/new-sandbox/src/polyfills.ts",
             "tsConfig": "projects/new-sandbox/tsconfig.spec.json",
-            "karmaConfig": "projects/new-sandbox/karma.conf.js",
             "assets": ["projects/new-sandbox/src/favicon.ico", "projects/new-sandbox/src/assets"],
             "styles": ["projects/new-sandbox/src/styles.scss"],
             "scripts": []
@@ -191,12 +189,10 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-builders/jest:run",
           "options": {
-            "main": "projects/second-sandbox/src/test.ts",
             "polyfills": "projects/second-sandbox/src/polyfills.ts",
             "tsConfig": "projects/second-sandbox/tsconfig.spec.json",
-            "karmaConfig": "projects/second-sandbox/karma.conf.js",
             "assets": [
               "projects/second-sandbox/src/favicon.ico",
               "projects/second-sandbox/src/assets"
