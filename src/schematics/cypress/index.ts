@@ -181,7 +181,7 @@ function addNewCypressCommands(
   projectArchitectJson['cypress-run'] = runJson;
   projectArchitectJson['cypress-open'] = openJson;
 
-  if (removeProtractor) {
+  if (removeProtractor || !projectArchitectJson['e2e']) {
     projectArchitectJson['e2e'] = openJson;
   }
 
