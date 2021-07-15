@@ -48,6 +48,9 @@ This command will open the (Electron) Cypress Test Runner and run your tests one
 | addCypressTestScripts | This will add Cypress `open` and `run` command scripts to your `package.json`. Include `--addCypressTestScripts` in your `ng add` command.                                                                  |
 | noBuilder             | This will skip the builder addition, leaving the `angular.json` file unmodified and requiring you to run Cypress from the command line or through your IDE. Include `--noBuilder` in your `ng add` command. |
 
+## Thank you
+Thank you to the contributors of this library [@muuvmuuv](https://github.com/muuvmuuv), [@konstantindenerz](https://github.com/konstantindenerz), [@cexbrayat](https://github.com/cexbrayat), [@MrCube42](https://github.com/MrCube42), [@devinshoemaker](https://github.com/devinshoemaker), [@Ant59](https://github.com/Ant59), [@NileshPatel17](https://github.com/NileshPatel17), [@timtim5174](https://github.com/timtim5174), [@tabuckner](https://github.com/tabuckner), and [@bovandersteene](https://github.com/bovandersteene). Thank you [@schuchard](https://github.com/schuchard) for pioneering the sandbox approach for developing Angular schematics.
+
 ## Issues
 
 Issues with this schematic can be filed [here](https://github.com/briebug/cypress-schematic/issues/new/choose).
