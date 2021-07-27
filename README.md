@@ -1,4 +1,4 @@
-# Cypress Angular Schematic
+# ⛔️ DEPRECATED ⛔️ Cypress Angular Schematic
 
 [![npm (scoped)](https://img.shields.io/npm/v/@briebug/cypress-schematic.svg)](https://www.npmjs.com/package/@briebug/cypress-schematic)
 ![Downloads](https://img.shields.io/npm/dm/@briebug/cypress-schematic.svg)
@@ -6,6 +6,15 @@
 <p align="center">
   <img alt="Cypress Schematic Logo" src="/cypress-schematic-logo-v2.png" width=300 />
 </p>
+
+## ⛔️ DEPRECATED ⛔️
+### This Angular Schematic has been adopted by Cypress and will be maintained in their repository by the Cypress Team moving forward. Head over to https://github.com/cypress-io/cypress/tree/develop/npm/cypress-schematic for more info, and feel free to contribute!
+
+
+### Thank you
+Thank you to the contributors of this library [@muuvmuuv](https://github.com/muuvmuuv), [@konstantindenerz](https://github.com/konstantindenerz), [@cexbrayat](https://github.com/cexbrayat), [@MrCube42](https://github.com/MrCube42), [@devinshoemaker](https://github.com/devinshoemaker), [@Ant59](https://github.com/Ant59), [@NileshPatel17](https://github.com/NileshPatel17), [@timtim5174](https://github.com/timtim5174), [@tabuckner](https://github.com/tabuckner), and [@bovandersteene](https://github.com/bovandersteene). Thank you [@schuchard](https://github.com/schuchard) for pioneering the sandbox approach for developing Angular schematics.
+
+<hr>
 
 Add [Cypress](https://cypress.io) to an Angular CLI project
 
@@ -47,9 +56,6 @@ This command will open the (Electron) Cypress Test Runner and run your tests one
 | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | addCypressTestScripts | This will add Cypress `open` and `run` command scripts to your `package.json`. Include `--addCypressTestScripts` in your `ng add` command.                                                                  |
 | noBuilder             | This will skip the builder addition, leaving the `angular.json` file unmodified and requiring you to run Cypress from the command line or through your IDE. Include `--noBuilder` in your `ng add` command. |
-
-## Thank you
-Thank you to the contributors of this library [@muuvmuuv](https://github.com/muuvmuuv), [@konstantindenerz](https://github.com/konstantindenerz), [@cexbrayat](https://github.com/cexbrayat), [@MrCube42](https://github.com/MrCube42), [@devinshoemaker](https://github.com/devinshoemaker), [@Ant59](https://github.com/Ant59), [@NileshPatel17](https://github.com/NileshPatel17), [@timtim5174](https://github.com/timtim5174), [@tabuckner](https://github.com/tabuckner), and [@bovandersteene](https://github.com/bovandersteene). Thank you [@schuchard](https://github.com/schuchard) for pioneering the sandbox approach for developing Angular schematics.
 
 ## Issues
 
